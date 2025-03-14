@@ -5,9 +5,13 @@ using UnityEngine.UI;
 using TMPro;
 using System;
 using System.IO;
+using UnityEngine.EventSystems;
+using System.Linq;
 
-public class GameUIController : MonoBehaviour
+
+public class GameUIController : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
+
     private static readonly int HUMAN_DROPDOWN_NUMBER = 0;
     private static readonly int AI_DROPDOWN_NUMBER = 1;
     private static readonly int MIN_MAX_DROPDOWN_NUMBER = 0;
@@ -15,6 +19,8 @@ public class GameUIController : MonoBehaviour
     private static readonly int FAST_ALPHA_BETA_DROPDOWN_NUMBER = 1;
 
     private static Dictionary<int, Func<Heuristic>> heuristicDictionary;
+    [SerializeField] private GameObject[] yellowPawns; // الأحجار الصفراء
+    [SerializeField] private GameObject[] redPawns; // الأحجار الحمراء
 
     [SerializeField] private TMP_Dropdown firstPlayerTypeDropdown = null;
     [SerializeField] private TMP_Dropdown firstPlayerAlgorithmDropdown = null;
@@ -74,8 +80,60 @@ public class GameUIController : MonoBehaviour
 
     private bool isAI = false;
     private int searchDepth = 1; // افتراضيًا يكون سهل
+    private GameObject selectedPawn = null; // الحجر الذي يتم سحبه
+    private Vector3 lastValidPosition; // آخر موقع صالح للحجر
+    private CanvasGroup canvasGroup;
+    [SerializeField] private Transform[] allowedPositions; // جميع أماكن الأحجار على البورد
 
-    static GameUIController()
+    private static Dictionary<Vector3, GameObject> occupiedPositions = new Dictionary<Vector3, GameObject>(); // تخزين الأحجار في البورد
+    public void OnBeginDrag(PointerEventData eventData)
+    {
+        selectedPawn = eventData.pointerDrag;
+        if (selectedPawn == null) return;
+
+        lastValidPosition = selectedPawn.transform.position;
+
+        // جعل الحجر نصف شفاف أثناء السحب
+        canvasGroup = selectedPawn.GetComponent<CanvasGroup>() ?? selectedPawn.AddComponent<CanvasGroup>();
+        canvasGroup.alpha = 0.6f;
+        canvasGroup.blocksRaycasts = false;
+    }
+
+    public void OnDrag(PointerEventData eventData)
+    {
+        if (selectedPawn == null) return;
+
+        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(eventData.position);
+        selectedPawn.transform.position = new Vector3(mousePosition.x, mousePosition.y, 0);
+    }
+
+    public void OnEndDrag(PointerEventData eventData)
+    {
+        if (selectedPawn == null) return;
+
+        // استعادة الشفافية للحجر
+        canvasGroup.alpha = 1f;
+        canvasGroup.blocksRaycasts = true;
+
+        // العثور على أقرب موقع متاح
+        Transform closestMarker = allowedPositions
+            .OrderBy(marker => Vector2.Distance(selectedPawn.transform.position, marker.position))
+            .FirstOrDefault(marker => !occupiedPositions.ContainsKey(marker.position));
+
+        if (closestMarker != null && !occupiedPositions.ContainsKey(closestMarker.position))
+        {
+            selectedPawn.transform.position = closestMarker.position;
+            occupiedPositions[closestMarker.position] = selectedPawn;
+        }
+        else
+        {
+            selectedPawn.transform.position = lastValidPosition;
+        }
+
+        selectedPawn = null;
+    }
+
+static GameUIController()
     {
         heuristicDictionary = new Dictionary<int, Func<Heuristic>>();
         heuristicDictionary[0] = () => new SimplePawnNumberHeuristic();
@@ -111,14 +169,13 @@ public class GameUIController : MonoBehaviour
     {
         gameModePopup.SetActive(true);
         difficultyPopup.SetActive(false);
-        startPopup.SetActive(false);
     }
 
     public void SelectLocal()
     {
         isAI = false;
         gameModePopup.SetActive(false);
-        ShowStartPopup();
+        StartGame(); // ✅ يبدأ اللعب مباشرة بدون نافذة اختيار المستوى
     }
 
     public void SelectM7nka()
@@ -126,7 +183,9 @@ public class GameUIController : MonoBehaviour
         isAI = true;
         gameModePopup.SetActive(false);
         ShowDifficultyPopup();
+        // ✅ عرض نافذة اختيار المستوى فقط إذا كان الذكاء الاصطناعي مفعلاً
     }
+
 
     private void ShowDifficultyPopup()
     {
@@ -137,18 +196,26 @@ public class GameUIController : MonoBehaviour
     {
         searchDepth = depth;
         difficultyPopup.SetActive(false);
-        ShowStartPopup();
+        StartGame(); // بعد اختيار المستوى، يبدأ اللعب مباشرة
     }
 
-    private void ShowStartPopup()
+    // ✅ زر "كانسل" في `Game Mode Popup`
+    public void CancelGameModePopup()
     {
-        startPopup.SetActive(true);
+        gameModePopup.SetActive(false);
     }
+
+    // ✅ زر "كانسل" في `Difficulty Popup` يعيد اللاعب إلى `Game Mode Popup`
+    public void CancelDifficultyPopup()
+    {
+        difficultyPopup.SetActive(false);
+        ShowGameModePopup();
+    }
+
 
     void StartGame()
     {
         board.SetActive(true); // تفعيل البورد عند بدء اللعب
-        startPopup.SetActive(false); // إغلاق آخر نافذة بعد بدء اللعبة
 
         gameEngine = new GameEngine();
         AiPlayer firstPlayer = null;
@@ -167,6 +234,24 @@ public class GameUIController : MonoBehaviour
         UpdateWinningPlayerText(PlayerNumber.None);
         playButton.interactable = false;
 
+        // ✅ 🔹 تجهيز الأحجار لكل لاعب
+        for (int i = 0; i < 9; i++)
+        {
+            yellowPawns[i].SetActive(true);
+            redPawns[i].SetActive(true);
+        }
+
+        // ✅ 🔹 ضبط أماكن الأحجار
+        GameObject allowedPositionsObject = GameObject.Find("AllowedPositions");
+        if (allowedPositionsObject != null)
+        {
+            allowedPositions = allowedPositionsObject
+                .GetComponentsInChildren<Transform>()
+                .Where(t => t != allowedPositionsObject.transform)
+                .ToArray();
+        }
+
+        Debug.Log("🎯 تم تجهيز الأحجار وإعداد البورد!");
         Debug.Log($"✅ بدأ اللعب: Player1 = Human | Player2 = {(isAI ? "AI" : "Human")} | Depth = {searchDepth}");
     }
     private AiPlayer InitPlayer(PlayerNumber playerNumber)

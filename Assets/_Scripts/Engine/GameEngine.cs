@@ -57,7 +57,7 @@ public class GameEngine
 
     private void RegisterNewGameState(GameState gameState)
     {
-        if(GameState != null)
+        if (GameState != null)
         {
             GameState.OnGameStateChanged -= OnGameStateChanged;
             GameState.OnLastSelectedFieldChanged -= UpdateLastFieldSelected;

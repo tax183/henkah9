@@ -82,6 +82,8 @@ public class GameState
         }
     }
 
+
+
     public double Evaluation { get; set; }
 
     public Board CurrentBoard { get; }

@@ -617,8 +617,8 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 734262139}
         m_TargetAssemblyTypeName: SceneLoader, Assembly-CSharp
-        m_MethodName: goToScene
-        m_Mode: 5
+        m_MethodName: LoadUm9MenuPage
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -812,7 +812,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 734262138}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3bce500c2db9c7648b90a4a7f0b3c2c3, type: 3}
+  m_Script: {fileID: 11500000, guid: dc237e205f05ea548872c0b94342f451, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!4 &734262140

@@ -1216,7 +1216,6 @@ MonoBehaviour:
   - {fileID: -6389688752668951839, guid: ea9eac41b5a959f4db1ba1e037a18439, type: 3}
   - {fileID: -7257705585415642605, guid: 3a0cfa1f1e31a7d4c85c7b0e01cbc377, type: 3}
   player1Button: {fileID: 453609405}
-  player2Button: {fileID: 988169659}
   restartButton: {fileID: 727771898}
   resultText: {fileID: 1021719538}
 --- !u!4 &1399466100
