@@ -165,22 +165,17 @@ public class GameState
     {
         Field newField = CurrentBoard.GetField(fieldIndex);
         PlayerNumber selectedFieldPawnPlayer = newField.PawnPlayerNumber;
+
         if (selectedFieldPawnPlayer == CurrentMovingPlayer)
         {
             LastSelectedField = newField;
         }
         else if (LastSelectedField != null && newField.Empty)
         {
-            if (CurrentPlayersPawnsLeft <= FLYING_PAWNS_NUMBER)
-            {
-                HandleFlyingMove(newField);
-            }
-            else
-            {
-                HandleNormalMove(newField);
-            }
+            HandleNormalMove(newField); // 🔹 لا يوجد طيران بعد الآن
         }
     }
+
 
     private void HandleNormalMove(Field newField)
     {
@@ -198,15 +193,28 @@ public class GameState
             PerformSelectedMove(newField);
         }
     }
-
+    private void RefreshPossibleMoves()
+    {
+        possibleMoveIndices = new List<List<int>>(Board.DEFAULT_NUMBER_OF_FIELDS);
+        InitializePossibleMoveIndices();
+    }
     private void PerformSelectedMove(Field newField)
     {
         LogMoveMove(CurrentMovingPlayer, LastSelectedField.FieldIndex, newField.FieldIndex);
         LastSelectedField.MoveTo(newField);
         LastSelectedField = null;
         MovesMade++;
+
+        // 🔹 تحديث قائمة الحركات الممكنة بعد كل حركة
+        RefreshPossibleMoves();
+
         TogglePawnDeletingOrSwitchPlayer();
     }
+
+
+
+
+
 
     private void PerformMove(Move move)
     {
@@ -455,32 +463,20 @@ public class GameState
     {
         List<Move> allMoves = new List<Move>();
         List<Field> playersFields = board.GetPlayerFields(playerNumber);
-        int playerPawns = playersFields.Count;
-        if (playerPawns <= PlayerData.FLYING_PAWNS_NUMBER)
+
+        foreach (var fromField in playersFields)
         {
-            foreach (var fromField in playersFields)
+            List<Field> toFields = GetPossibleNewFields(fromField, board);
+            foreach (var toField in toFields)
             {
-                List<Field> toFields = GetPossibleNewFieldsFlying(fromField, board);
-                foreach (var toField in toFields)
-                {
-                    allMoves.Add(new Move(fromField.FieldIndex, toField.FieldIndex));
-                }
-            }
-        }
-        else
-        {
-            foreach (var fromField in playersFields)
-            {
-                List<Field> toFields = GetPossibleNewFields(fromField, board);
-                foreach (var toField in toFields)
-                {
-                    allMoves.Add(new Move(fromField.FieldIndex, toField.FieldIndex));
-                }
+                allMoves.Add(new Move(fromField.FieldIndex, toField.FieldIndex));
             }
         }
 
         return allMoves;
     }
+
+
 
     private List<Field> GetPossibleNewFields(int fromIndex, Board board)
     {
@@ -655,25 +651,21 @@ public class GameState
 
     public HashSet<int> GetCurrentPlayerPossibleMoveIndices()
     {
-        if(LastSelectedField == null)
+        if (LastSelectedField == null)
         {
             return null;
         }
-        List<Field> fields;
-        if (CurrentPlayersPawnsLeft <= FLYING_PAWNS_NUMBER)
-        {
-            fields = GetPossibleNewFieldsFlying(LastSelectedField, CurrentBoard);
-        } else
-        {
-            fields = GetPossibleNewFields(LastSelectedField, CurrentBoard);
-        }
+
+        List<Field> fields = GetPossibleNewFields(LastSelectedField, CurrentBoard); // 🔹 إزالة الطيران نهائيًا
         HashSet<int> indices = new HashSet<int>();
-        foreach(var field in fields)
+
+        foreach (var field in fields)
         {
             indices.Add(field.FieldIndex);
         }
         return indices;
     }
+
 
     private void LogMoveMove(PlayerNumber player, int fieldIndexFrom, int fieldIndexTo)
     {
