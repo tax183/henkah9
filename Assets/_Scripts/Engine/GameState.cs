@@ -223,14 +223,15 @@ public class GameState
             ActiveMills = millDifference.TurnActiveMills;
         }
 
+        LastSelectedField = null; // 🔴 هذا هو الحل، يجب أن يكون دائمًا هنا
         if (PawnsToRemove <= 0)
         {
-            LastSelectedField = null;  // 🔴 يتم إلغاء الاختيار فقط إذا لم يكن لديك أحجار للحذف
             SwitchPlayer();
         }
 
         OnGameStateChanged();
     }
+
 
 
 
