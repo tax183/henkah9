@@ -129,7 +129,7 @@ public class GameState
     {
         if (PawnsToRemove > 0)
         {
-            HandlePawnRemoval(fieldIndex);
+            HandlePawnRemoval(fieldIndex); // ✅ تأكد من استدعاء الدالة المباشرة فقط
         }
         else if (GameStage == MillGameStage.PlacingPawns)
         {
@@ -139,9 +139,12 @@ public class GameState
         {
             HandlePawnMoving(fieldIndex);
         }
+
         CheckGameStateChanged();
         OnGameStateChanged();
     }
+
+
 
     private void CheckGameStateChanged()
     {
@@ -200,14 +203,34 @@ public class GameState
     {
         LogMoveMove(CurrentMovingPlayer, LastSelectedField.FieldIndex, newField.FieldIndex);
         LastSelectedField.MoveTo(newField);
-        LastSelectedField = null;
         MovesMade++;
 
-        // 🔹 تحديث قائمة الحركات الممكنة بعد كل حركة
         RefreshPossibleMoves();
 
-        TogglePawnDeletingOrSwitchPlayer();
+        MillDifference millDifference = GetMillDifference(ActiveMills, CurrentBoard);
+        int newMillsCount = millDifference.NewMills.Count;
+
+        if (newMillsCount > 0)
+        {
+            PawnsToRemove += newMillsCount;
+            ActiveMills = millDifference.TurnActiveMills;
+            ClosedMills.ExceptWith(millDifference.NewMills);
+        }
+        else
+        {
+            ActiveMills = millDifference.TurnActiveMills;
+        }
+
+        if (PawnsToRemove <= 0)
+        {
+            LastSelectedField = null;  // 🔴 يتم إلغاء الاختيار فقط إذا لم يكن لديك أحجار للحذف
+            SwitchPlayer();
+        }
+
+        OnGameStateChanged();
     }
+
+
 
 
 
@@ -224,33 +247,78 @@ public class GameState
 
     public void HandlePawnRemoval(int fieldIndex)
     {
-        Field field = CurrentBoard.GetField(fieldIndex);
-        if (!field.Empty)
+        Field fieldToRemove = CurrentBoard.GetField(fieldIndex);
+
+        if (!fieldToRemove.Empty && fieldToRemove.PawnPlayerNumber == OtherPlayer)
         {
-            if (!field.BelongsTo(CurrentMovingPlayer))
+            fieldToRemove.Reset();
+            LogRemoveMove(OtherPlayer, fieldIndex); // 🔴 انتبه: يجب أن تكون OtherPlayer
+            PawnsToRemove--;
+            MovesMade++;
+
+            RecalculateActiveMills();
+
+            if (PawnsToRemove <= 0)
             {
-                RemovePawn(field);
+                SwitchPlayer();
             }
+
+            OnGameStateChanged();
         }
     }
 
+
+
     private void RemovePawn(int index)
     {
-        CurrentBoard.GetField(index).Reset();
+        Field fieldToRemove = CurrentBoard.GetField(index);
+
+        if (!fieldToRemove.Empty && fieldToRemove.PawnPlayerNumber == OtherPlayer)
+        {
+            fieldToRemove.Reset();
+            LogRemoveMove(OtherPlayer, index); // 🔴 التصحيح هنا! استخدم OtherPlayer بدل CurrentMovingPlayer
+            PawnsToRemove--;
+            MovesMade++;
+
+            RecalculateActiveMills();
+
+            if (PawnsToRemove <= 0)
+            {
+                SwitchPlayer();
+            }
+
+            OnGameStateChanged();
+        }
+        else
+        {
+            UnityEngine.Debug.Log("⚠️ محاولة إزالة حجر غير صحيح أو فارغ.");
+        }
     }
+
+
+
+
 
     private void RemovePawn(Field field)
     {
         field.Reset();
         LogRemoveMove(CurrentMovingPlayer, field.FieldIndex);
         PawnsToRemove--;
+
         MovesMade++;
+
+
         RecalculateActiveMills();
-        if (PawnsToRemove == 0)
+
+        // ✅ **إذا لم يتبقَ أي حجر للإزالة، يتم تبديل الدور**
+        if (PawnsToRemove <= 0)
         {
             SwitchPlayer();
+            OnGameStateChanged(); // ✅ تحديث حالة اللعبة بعد التبديل
         }
     }
+
+
 
     private void HandlePawnPlacing(int fieldIndex)
     {
@@ -278,17 +346,27 @@ public class GameState
     private void TogglePawnDeletingOrSwitchPlayer()
     {
         MillDifference millDifference = GetMillDifference(ActiveMills, CurrentBoard);
-        if (millDifference.NewMills.Count > 0)
+
+        // 🔹 حساب الطواحين الجديدة والطواحين التي أعيد تشكيلها
+        int newMillsCount = millDifference.NewMills.Count;
+
+        if (newMillsCount > 0)
         {
-            PawnsToRemove = millDifference.NewMills.Count;
+            PawnsToRemove += newMillsCount; // ✅ تأكد من إضافة الأحجار التي يجب إزالتها
             ActiveMills = millDifference.TurnActiveMills;
-            ClosedMills = millDifference.NewMills;
+            ClosedMills.ExceptWith(millDifference.NewMills); // ✅ إزالة الطواحين المعاد تشكيلها من المغلقة
         }
-        else
+
+        // 🔹 **لا يتم تبديل اللاعب إلا إذا لم يكن هناك حجر للإزالة**
+        if (PawnsToRemove <= 0)
         {
             SwitchPlayer();
         }
     }
+
+
+
+
 
     private void NoteCurrentPlayerPawnPlacing()
     {
@@ -322,11 +400,19 @@ public class GameState
     private void RecalculateActiveMills()
     {
         HashSet<Mill> newMills = GetActiveMills(CurrentBoard);
-        HashSet<Mill> closedMills = new HashSet<Mill>(newMills);
-        closedMills.ExceptWith(ActiveMills);
-        ActiveMills = newMills;
-        ClosedMills = closedMills;
+
+        // 🔹 الطواحين التي أعيد تشكيلها (كانت مغلقة وأصبحت نشطة من جديد)
+        HashSet<Mill> reopenedMills = new HashSet<Mill>(ClosedMills);
+        reopenedMills.IntersectWith(newMills);
+
+        // 🔹 إزالة الطواحين المعاد تشكيلها من قائمة الطواحين المغلقة
+        ClosedMills.ExceptWith(reopenedMills);
+
+        // 🔹 تحديث قائمة الطواحين النشطة
+        ActiveMills = new HashSet<Mill>(newMills);
     }
+
+
     private void RecalculateWinningPlayer()
     {
         if(GameStage == MillGameStage.PlacingPawns)
@@ -635,8 +721,16 @@ public class GameState
     public MillDifference GetMillDifference(HashSet<Mill> previousMills, Board board)
     {
         HashSet<Mill> activeMills = GetActiveMills(board);
+
+        // 🔹 الطواحين الجديدة الحقيقية
         HashSet<Mill> newActiveMills = new HashSet<Mill>(activeMills);
         newActiveMills.ExceptWith(previousMills);
+
+        // 🔹 إعادة فتح الطواحين التي كانت مغلقة (أضيف هذا بوضوح هنا)
+        HashSet<Mill> reopenedMills = new HashSet<Mill>(ClosedMills);
+        reopenedMills.IntersectWith(activeMills);
+        newActiveMills.UnionWith(reopenedMills);
+
         return new MillDifference(activeMills, newActiveMills);
     }
 
