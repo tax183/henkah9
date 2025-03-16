@@ -30,10 +30,12 @@ public class GameEngine
         RegisterNewGameState(new GameState());
     }
 
-    public void HandleSelection(int selectedFieldIndex)
+    public void HandleSelection(int fieldIndex)
     {
-        GameState.HandleSelection(selectedFieldIndex);
+        GameState.HandleSelection(fieldIndex);
+        OnBoardChanged(GameState.CurrentBoard); // تأكد من وجود هذا الاستدعاء هنا!
     }
+
 
     public void MakeMove(GameState gameState)
     {
@@ -57,7 +59,7 @@ public class GameEngine
 
     private void RegisterNewGameState(GameState gameState)
     {
-        if (GameState != null)
+        if(GameState != null)
         {
             GameState.OnGameStateChanged -= OnGameStateChanged;
             GameState.OnLastSelectedFieldChanged -= UpdateLastFieldSelected;
