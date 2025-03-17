@@ -18777,9 +18777,9 @@ MonoBehaviour:
   - {fileID: 1386488973}
   - {fileID: 968574576}
   - {fileID: 2142275364}
-  firstPlayerPawnImage: {fileID: 1185339983200042062, guid: e889501f142a8a34c918acdce5d5628f,
+  firstPlayerPawnImage: {fileID: 1980140528209489618, guid: 735974245ca8cf84dbd5933128656a66,
     type: 3}
-  secondPlayerPawnImage: {fileID: 1980140528209489618, guid: 735974245ca8cf84dbd5933128656a66,
+  secondPlayerPawnImage: {fileID: 1185339983200042062, guid: e889501f142a8a34c918acdce5d5628f,
     type: 3}
   emptyField: {fileID: 0}
   winningPlayerTextTemplate: 'Won: '
