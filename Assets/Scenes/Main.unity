@@ -17292,7 +17292,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1699442718
 RectTransform:
   m_ObjectHideFlags: 0
@@ -17877,10 +17877,10 @@ Transform:
   - {fileID: 1417992356}
   - {fileID: 820215730}
   - {fileID: 1390854724}
+  - {fileID: 1731959418}
   - {fileID: 1773499743}
   - {fileID: 1913836093}
   - {fileID: 1206169711}
-  - {fileID: 1731959418}
   m_Father: {fileID: 1699442718}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1773499742
@@ -18732,10 +18732,10 @@ MonoBehaviour:
   - {fileID: 1417992355}
   - {fileID: 820215729}
   - {fileID: 1390854723}
+  - {fileID: 1731959417}
   - {fileID: 1773499742}
   - {fileID: 1913836092}
   - {fileID: 1206169710}
-  - {fileID: 1731959417}
   firstPlayerTypeDropdown: {fileID: 2140296643}
   firstPlayerAlgorithmDropdown: {fileID: 555253942}
   firstPlayerHeuristicDropdown: {fileID: 1653119821}

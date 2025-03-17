@@ -7,9 +7,9 @@ using System;
 using System.IO;
 using UnityEngine.EventSystems;
 using System.Linq;
+using UnityEngine.SceneManagement;
 
-
-public class GameUIController : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+public class GameUIController : MonoBehaviour
 {
 
     private static readonly int HUMAN_DROPDOWN_NUMBER = 0;
@@ -84,54 +84,11 @@ public class GameUIController : MonoBehaviour, IBeginDragHandler, IDragHandler, 
     private Vector3 lastValidPosition; // آخر موقع صالح للحجر
     private CanvasGroup canvasGroup;
     [SerializeField] private Transform[] allowedPositions; // جميع أماكن الأحجار على البورد
+    private int player1Stones = 9;
+    private int player2Stones = 9;
 
     private static Dictionary<Vector3, GameObject> occupiedPositions = new Dictionary<Vector3, GameObject>(); // تخزين الأحجار في البورد
-    public void OnBeginDrag(PointerEventData eventData)
-    {
-        selectedPawn = eventData.pointerDrag;
-        if (selectedPawn == null) return;
 
-        lastValidPosition = selectedPawn.transform.position;
-
-        // جعل الحجر نصف شفاف أثناء السحب
-        canvasGroup = selectedPawn.GetComponent<CanvasGroup>() ?? selectedPawn.AddComponent<CanvasGroup>();
-        canvasGroup.alpha = 0.6f;
-        canvasGroup.blocksRaycasts = false;
-    }
-
-    public void OnDrag(PointerEventData eventData)
-    {
-        if (selectedPawn == null) return;
-
-        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(eventData.position);
-        selectedPawn.transform.position = new Vector3(mousePosition.x, mousePosition.y, 0);
-    }
-
-    public void OnEndDrag(PointerEventData eventData)
-    {
-        if (selectedPawn == null) return;
-
-        // استعادة الشفافية للحجر
-        canvasGroup.alpha = 1f;
-        canvasGroup.blocksRaycasts = true;
-
-        // العثور على أقرب موقع متاح
-        Transform closestMarker = allowedPositions
-            .OrderBy(marker => Vector2.Distance(selectedPawn.transform.position, marker.position))
-            .FirstOrDefault(marker => !occupiedPositions.ContainsKey(marker.position));
-
-        if (closestMarker != null && !occupiedPositions.ContainsKey(closestMarker.position))
-        {
-            selectedPawn.transform.position = closestMarker.position;
-            occupiedPositions[closestMarker.position] = selectedPawn;
-        }
-        else
-        {
-            selectedPawn.transform.position = lastValidPosition;
-        }
-
-        selectedPawn = null;
-    }
 
 static GameUIController()
     {
@@ -164,6 +121,28 @@ static GameUIController()
             pawnButtons[i].onClick.AddListener(() => HandleButtonClick(x));
         }
     }
+    public void UpdateStonesUI(int player)
+    {
+        if (GameEngine.Instance == null) return; // تأكد أن GameEngine موجود
+
+        int stonesLeft = (player == 1) ? GameEngine.Instance.GameState.FirstPlayersPawnsToPlaceLeft
+                                       : GameEngine.Instance.GameState.SecondPlayersPawnsToPlaceLeft;
+
+        Debug.Log($"🎯 تحديث للأحجار! لاعب {player} لديه {stonesLeft} حجر متبقي.");
+
+        if (stonesLeft >= 0 && stonesLeft < yellowPawns.Length)
+        {
+            if (player == 1)
+            {
+                yellowPawns[stonesLeft].SetActive(false);
+            }
+            else
+            {
+                redPawns[stonesLeft].SetActive(false);
+            }
+        }
+    }
+
 
     private void ShowGameModePopup()
     {
@@ -203,6 +182,8 @@ static GameUIController()
     public void CancelGameModePopup()
     {
         gameModePopup.SetActive(false);
+
+        SceneManager.LoadScene("um9 menu page");
     }
 
     // ✅ زر "كانسل" في `Difficulty Popup` يعيد اللاعب إلى `Game Mode Popup`

@@ -344,7 +344,15 @@ public class GameState
         NotePlayerPawnPlacing(playerNumber);
         LogPlaceMove(playerNumber, fieldIndex);
         MovesMade++;
+
+        // ✅ تحديث واجهة المستخدم لتقليل عدد الأحجار المتبقية
+        GameUIController uiController = UnityEngine.Object.FindObjectOfType<GameUIController>();
+        if (uiController != null)
+        {
+            uiController.UpdateStonesUI(playerNumber == PlayerNumber.FirstPlayer ? 1 : 2);
+        }
     }
+
 
     private void TogglePawnDeletingOrSwitchPlayer()
     {
