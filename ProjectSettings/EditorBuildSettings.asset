@@ -50,5 +50,11 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Third girl.unity
     guid: 4273ef384c768f149aa0531349099079
+  - enabled: 1
+    path: Assets/Scenes/Login.unity
+    guid: 7474e656b152a964d9a8ddda45fec438
+  - enabled: 1
+    path: Assets/Scenes/ProfileScene.unity
+    guid: cb655dafd15a12d448562e9f4d4274f0
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0

@@ -111,6 +111,25 @@ static GameUIController()
         startGameButton.onClick.AddListener(StartGame);
 
         ShowGameModePopup();
+
+        board.SetActive(false); // تعطيل البورد عند بدء اللعبة
+        InitPawnButtonHandlers();
+
+        localButton.onClick.AddListener(SelectLocal);
+        m7nkaButton.onClick.AddListener(SelectM7nka);
+        easyButton.onClick.AddListener(() => SelectDifficulty(1));
+        mediumButton.onClick.AddListener(() => SelectDifficulty(2));
+        hardButton.onClick.AddListener(() => SelectDifficulty(3));
+        startGameButton.onClick.AddListener(StartGame);
+
+        // ✅ تقييد الضيوف في الوضع المحلي فقط
+        if (AccountManager.IsGuest())
+        {
+            Debug.Log("🚫 المستخدم ضيف، يتم تعطيله من استخدام المحنكة!");
+            m7nkaButton.gameObject.SetActive(false); // إخفاء زر "المحنكة"
+        }
+
+        ShowGameModePopup();
     }
 
     private void InitPawnButtonHandlers()
@@ -414,4 +433,6 @@ static GameUIController()
             }
         }
     }
+
+
 }
