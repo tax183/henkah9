@@ -41,4 +41,26 @@ public class HumanHandController : MonoBehaviour
         buttonPaper.interactable = false;
         buttonScissors.interactable = false;
     }
+
+    public void PlayChoice(int choice)
+    {
+        if (hasChosen) return;
+
+        animator.SetBool("StartPlay", true);
+        animator.SetFloat("Blend", choice); // 0,1,2
+        DisableButtons();
+    }
+
+    public void ResetButtons()
+    {
+        hasChosen = false;
+        buttonRock.interactable = true;
+        buttonPaper.interactable = true;
+        buttonScissors.interactable = true;
+        animator.SetBool("StartPlay", false); // ‰Êﬁ› «·√‰„Ì‘‰
+        hasChosen = false;
+
+    }
+
+
 }
