@@ -3,6 +3,11 @@ using UnityEngine.UI;
 
 public class RPSGameManager : MonoBehaviour
 {
+    public static int whoStarts = 1;
+
+    public GameObject rpsPanel; // بانل حجرة ورقة مقص
+    public GameObject boardPanel; // بانل البورد التراثية
+
     public HumanHandController player1HandController;
     public HumanHandController player2HandController;
 
@@ -13,6 +18,8 @@ public class RPSGameManager : MonoBehaviour
     public GameObject panelPlayer2;
     public GameObject panelResult;
     public Text resultText;
+    public GameObject restartButton;
+
 
     private int player1Choice = -1;
     private int player2Choice = -1;
@@ -46,9 +53,31 @@ public class RPSGameManager : MonoBehaviour
             string result = DetermineWinner(player1Choice, player2Choice);
             resultText.text = result;
 
+            // ✅ نعرض زر الإعادة فقط إذا كانت تعادل
+            if (result == "تعادل!")
+            {
+                restartButton.SetActive(true);
+            }
+            else
+            {
+                restartButton.SetActive(false);
+
+                // ✅ التعديل: نخفي واجهة RPS ونظهر البورد
+                rpsPanel.SetActive(false);
+                boardPanel.SetActive(true);
+
+                // ✅ تحديد من الفائز عشان يبدأ
+                RPSGameManager.whoStarts = result == "اللاعب الأول فاز!" ? 1 : 2;
+
+                // ✅ نبدأ اللعبة فعليًا
+                GameObject.Find("GameUIController").GetComponent<GameUIController>().StartGame();
+            }
+
+
             currentTurn = PlayerTurn.ShowResult;
         }
     }
+
 
 
     string DetermineWinner(int p1, int p2)
@@ -68,11 +97,14 @@ public class RPSGameManager : MonoBehaviour
         panelResult.SetActive(false);
         panelPlayer1.SetActive(true);
 
-        player1HandObject.SetActive(false);
-        player2HandObject.SetActive(false);
+        player1HandObject.SetActive(true);
+        player2HandObject.SetActive(true);
 
         player1HandController.ResetButtons();
         player2HandController.ResetButtons();
+
+        restartButton.SetActive(false);
+
     }
 }
 

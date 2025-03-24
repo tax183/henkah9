@@ -63,6 +63,18 @@ public class GameUIController : MonoBehaviour
     [SerializeField] private Button hardButton;
     [SerializeField] private Button startGameButton;
 
+    [SerializeField] private GameObject gameModePanel;
+    [SerializeField] private GameObject rpsPanel;
+    [SerializeField] private GameObject boardPanel;
+
+
+    public void ShowRPSPanel()
+    {
+        gameModePanel.SetActive(false);
+        rpsPanel.SetActive(true);
+        boardPanel.SetActive(false);
+    }
+
     private Color emptyColor = new Color(255, 255, 255, 0);
     private Color nonEmptyColor = new Color(255, 255, 255, 255);
 
@@ -111,6 +123,13 @@ static GameUIController()
         startGameButton.onClick.AddListener(StartGame);
 
         ShowGameModePopup();
+        gameModePanel.SetActive(true);  // تظهر أول شي
+        rpsPanel.SetActive(false);      // مخفية بالبداية
+        boardPanel.SetActive(false);    // البورد مخفي بالبداية
+
+        InitPawnButtonHandlers();
+
+        localButton.onClick.AddListener(ShowRPSPanel);
     }
 
     private void InitPawnButtonHandlers()
@@ -194,7 +213,7 @@ static GameUIController()
     }
 
 
-    void StartGame()
+    public void StartGame()
     {
         board.SetActive(true); // تفعيل البورد عند بدء اللعب
 
@@ -414,4 +433,6 @@ static GameUIController()
             }
         }
     }
+
+
 }
