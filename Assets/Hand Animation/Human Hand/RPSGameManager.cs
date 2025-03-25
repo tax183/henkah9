@@ -53,31 +53,64 @@ public class RPSGameManager : MonoBehaviour
             string result = DetermineWinner(player1Choice, player2Choice);
             resultText.text = result;
 
-            // ✅ نعرض زر الإعادة فقط إذا كانت تعادل
             if (result == "تعادل!")
             {
-                restartButton.SetActive(true);
+                // ❌ نخفي زر الإعادة والنص أولًا قبل تشغيل الأنميشن
+                restartButton.SetActive(false);
+                resultText.text = ""; // نخفي النص
+
+                // ✅ تشغيل الأنميشن
+                player1HandObject.SetActive(true);
+                player2HandObject.SetActive(true);
+
+                player1HandController.PlayChoice(player1Choice);
+                player2HandController.PlayChoice(player2Choice);
+
+                // ✅ بعد 4 ثانية (وقت كافي للأنميشن) نظهر زر الإعادة والنص
+                Invoke(nameof(ShowResultTextAndRestartButton), 4f);
             }
+
+
             else
             {
                 restartButton.SetActive(false);
+                resultText.text = ""; // ❌ نخفي النص مؤقتًا
 
-                // ✅ التعديل: نخفي واجهة RPS ونظهر البورد
-                rpsPanel.SetActive(false);
-                boardPanel.SetActive(true);
+                // ✅ نشغل الأنميشن أولًا
+                player1HandObject.SetActive(true);
+                player2HandObject.SetActive(true);
 
-                // ✅ تحديد من الفائز عشان يبدأ
-                RPSGameManager.whoStarts = result == "اللاعب الأول فاز!" ? 1 : 2;
+                player1HandController.PlayChoice(player1Choice);
+                player2HandController.PlayChoice(player2Choice);
 
-                // ✅ نبدأ اللعبة فعليًا
-                GameObject.Find("GameUIController").GetComponent<GameUIController>().StartGame();
+                // ✅ بعد 4 ثواني، نظهر تكست الفائز
+                Invoke(nameof(ShowWinnerText), 4f);
+
+                // ✅ بعد 4.5 ثانية (وقت كافي للأنميشن) يتم الانتقال للبورد
+                Invoke(nameof(TransitionToBoard), 4.5f);
+
+                currentTurn = PlayerTurn.ShowResult;
             }
-
 
             currentTurn = PlayerTurn.ShowResult;
         }
     }
 
+    private void ShowRestartButton()
+    {
+        restartButton.SetActive(true);
+    }
+
+    private void ShowResultTextAndRestartButton()
+    {
+        resultText.text = "تعادل!"; // إظهار النص
+        restartButton.SetActive(true); // إظهار زر الإعادة
+    }
+
+    private void ShowWinnerText()
+    {
+        resultText.text = DetermineWinner(player1Choice, player2Choice);
+    }
 
 
     string DetermineWinner(int p1, int p2)
@@ -105,6 +138,20 @@ public class RPSGameManager : MonoBehaviour
 
         restartButton.SetActive(false);
 
+    }
+
+    // ✅ دالة الانتقال بعد انتهاء الأنميشن
+    private void TransitionToBoard()
+    {
+        // ✅ نخفي RPS ونظهر البورد
+        rpsPanel.SetActive(false);
+        boardPanel.SetActive(true);
+
+        // ✅ تحديد من الفائز ليبدأ أولًا
+        RPSGameManager.whoStarts = resultText.text == "اللاعب الأول فاز!" ? 1 : 2;
+
+        // ✅ نبدأ اللعبة
+        GameObject.Find("GameUIController").GetComponent<GameUIController>().StartGame();
     }
 }
 

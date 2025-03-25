@@ -253,6 +253,18 @@ static GameUIController()
 
         Debug.Log("🎯 تم تجهيز الأحجار وإعداد البورد!");
         Debug.Log($"✅ بدأ اللعب: Player1 = Human | Player2 = {(isAI ? "AI" : "Human")} | Depth = {searchDepth}");
+
+        // ✅ تحديد من الفائز في RPS ليبدأ أولًا
+        if (RPSGameManager.whoStarts == 1)
+        {
+            Debug.Log("🎯 الدور الأول للاعب 1 (بفوزه في حجرة ورقة مقص)");
+            gameEngine.GameState.CurrentMovingPlayer = PlayerNumber.FirstPlayer;
+        }
+        else
+        {
+            Debug.Log("🎯 الدور الأول للاعب 2 (بفوزه في حجرة ورقة مقص)");
+            gameEngine.GameState.CurrentMovingPlayer = PlayerNumber.SecondPlayer;
+        }
     }
     private AiPlayer InitPlayer(PlayerNumber playerNumber)
     {
