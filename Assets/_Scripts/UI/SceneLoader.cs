@@ -14,4 +14,10 @@ public class SceneLoader : MonoBehaviour
     {
         SceneManager.LoadScene("Main");
     }
+    // ✅ دالة العودة إلى "Game Page" عند الضغط على زر "Cancel"
+    public void LoadGamePage()
+    {
+        SceneManager.LoadScene("Games Page");
+    }
+
 }

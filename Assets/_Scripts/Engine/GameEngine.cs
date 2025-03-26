@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class GameEngine
 {
+    public static GameEngine Instance { get; private set; } // ✅ إضافة متغير Instance
+
     public delegate void GameFinished(PlayerNumber winningPlayerNumber);
     public event GameFinished OnGameFinished = delegate { };
 
@@ -23,9 +25,10 @@ public class GameEngine
 
     private PlayerNumber lastPlayerTurn;
 
-
     public GameEngine()
     {
+        Instance = this; // ✅ حفظ نسخة Singleton من GameEngine
+
         lastPlayerTurn = PlayerNumber.FirstPlayer;
         RegisterNewGameState(new GameState());
     }
@@ -35,7 +38,6 @@ public class GameEngine
         GameState.HandleSelection(fieldIndex);
         OnBoardChanged(GameState.CurrentBoard); // تأكد من وجود هذا الاستدعاء هنا!
     }
-
 
     public void MakeMove(GameState gameState)
     {
@@ -59,7 +61,7 @@ public class GameEngine
 
     private void RegisterNewGameState(GameState gameState)
     {
-        if(GameState != null)
+        if (GameState != null)
         {
             GameState.OnGameStateChanged -= OnGameStateChanged;
             GameState.OnLastSelectedFieldChanged -= UpdateLastFieldSelected;
