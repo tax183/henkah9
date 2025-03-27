@@ -2,7 +2,9 @@
 using UnityEngine.SceneManagement;
 using Unity.Services.Authentication;
 using Unity.Services.Core;
+using Unity.Services.CloudSave;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 public class AccountManager : MonoBehaviour
@@ -11,11 +13,22 @@ public class AccountManager : MonoBehaviour
     private static string guestKey = "IsGuest";
     private static string playerNameKey = "PlayerName";
     private static string playerScoreKey = "PlayerScore";
+    [SerializeField] private GameObject WarningImage; // صورة التحذير
+    [SerializeField] private GameObject aiButton; // زر المحنكه
+    public static bool isGuest = true;
+
+
+
 
     void Start()
     {
-        DontDestroyOnLoad(gameObject); // تأكد من بقاء هذا الكائن عبر المشاهد
-        InitializeUnityServices(); // بدء خدمات يونتي
+        DontDestroyOnLoad(gameObject);
+        InitializeUnityServices();
+        // تأكد أن زر المحنكه يظهر دائمًا
+        if (aiButton != null)
+        {
+            aiButton.SetActive(true);
+        }
     }
 
     private async Task InitializeUnityServices()
@@ -32,46 +45,53 @@ public class AccountManager : MonoBehaviour
             PlayerPrefs.Save();
         }
 
-        // التأكد من نقل المستخدم إلى `ProfileScene` إذا كان مسجلًا
-        if (PlayerPrefs.HasKey(playerIDKey) && !IsGuest())
+        // ✅ منع تغيير المشهد إذا اللاعب ضيف
+        if (!IsGuest() && PlayerPrefs.HasKey(playerIDKey))
         {
-            SceneManager.LoadScene("ProfileScene");
+            Scene currentScene = SceneManager.GetActiveScene();
+            if (currentScene.name != "ProfileScene")
+            {
+                SceneManager.LoadScene("ProfileScene");
+            }
         }
     }
+
     public void OpenProfileScene()
     {
         SceneManager.LoadScene("ProfileScene");
     }
 
-    // ✅ التحقق مما إذا كان المستخدم ضيفًا
     public static bool IsGuest()
     {
         return PlayerPrefs.GetInt(guestKey, 1) == 1;
     }
 
-    // ✅ تسجيل مستخدم جديد
     public async void Register(string playerName)
     {
+        PlayerPrefs.SetInt(guestKey, 0);
+        isGuest = false; // ✅ نلغي حالة الضيف هنا
+
         if (string.IsNullOrEmpty(playerName))
         {
-            Debug.Log("❌ الرجاء إدخال اسم صحيح!");
+            Debug.Log("❌ Please enter a valid name!");
             return;
         }
 
         await InitializeUnityServices();
-        string playerId = AuthenticationService.Instance.PlayerId;
+
+        await AuthenticationService.Instance.SignInAnonymouslyAsync();
+        string newPlayerId = AuthenticationService.Instance.PlayerId;
 
         PlayerPrefs.SetString(playerNameKey, playerName);
-        PlayerPrefs.SetString(playerIDKey, playerId);
-        PlayerPrefs.SetInt(guestKey, 0); // ليس ضيفًا
-        PlayerPrefs.SetInt(playerScoreKey, 0); // سكور يبدأ من 0
+        PlayerPrefs.SetString(playerIDKey, newPlayerId);
+        PlayerPrefs.SetInt(guestKey, 0);
+        PlayerPrefs.SetInt(playerScoreKey, 0);
         PlayerPrefs.Save();
 
-        Debug.Log($"✅ تم إنشاء الحساب: {playerName} - ID: {playerId}");
+        Debug.Log($"✅ Account created: {playerName} - ID: {newPlayerId}");
         SceneManager.LoadScene("ProfileScene");
     }
 
-    // ✅ تسجيل الدخول كضيف
     public void PlayAsGuest()
     {
         if (!PlayerPrefs.HasKey(playerIDKey))
@@ -80,17 +100,61 @@ public class AccountManager : MonoBehaviour
             PlayerPrefs.SetString(playerIDKey, guestID);
         }
 
-        PlayerPrefs.SetInt(guestKey, 1); // المستخدم ضيف
+        PlayerPrefs.SetInt(guestKey, 1);
         PlayerPrefs.Save();
 
-        Debug.Log("🚀 تم الدخول كضيف، سيتم توجيهه إلى اللعب المحلي فقط.");
-        SceneManager.LoadScene("Um9 menu page"); // تغيير المشهد إلى اللعب المحلي
+        isGuest = true; // ✅ لازم نخزنها بالمتغير الثابت
+        Debug.Log("🚀 تسجيل الدخول كضيف.");
+        SceneManager.LoadScene("Um9 menu page");
     }
 
-    // ✅ استرجاع معلومات اللاعب
+
+    [SerializeField] private GameObject warningPanel;
+    [SerializeField] private TMPro.TMP_Text warningText;
+
+    public void TryEnterGameMode(string sceneName)
+    {
+        if (isGuest && sceneName != "Um9 menu page")
+        {
+            ShowWarningImage();
+            Debug.LogWarning("⚠️ الضيف لا يمكنه الدخول لهذا الطور!");
+            return;
+        }
+
+        SceneManager.LoadScene(sceneName);
+    }
+    public void RegisterAsRealPlayer()
+    {
+        isGuest = false; // ✅ كأنك فتحت القفل
+        PlayerPrefs.SetInt("Guest", 0); // نخزنها لمرات الجاي
+        Debug.Log("✅ تم تفعيل الحساب كلاعب مسجل.");
+    }
+
+
+
+    public void ShowWarningImage()
+    {
+        if (WarningImage != null)
+        {
+            WarningImage.SetActive(true);
+            Invoke("HideWarningImage", 3f); // إخفاء الصورة بعد 3 ثوانٍ تلقائياً
+        }
+    }
+
+    private void HideWarningImage()
+    {
+        WarningImage.SetActive(false);
+    }
+
+
+    private void HideWarningMessage()
+    {
+        warningPanel.SetActive(false);
+    }
+
     public static string GetPlayerName()
     {
-        return PlayerPrefs.GetString(playerNameKey, "لاعب مجهول");
+        return PlayerPrefs.GetString(playerNameKey, "Unknown Player");
     }
 
     public static string GetPlayerID()
@@ -103,7 +167,6 @@ public class AccountManager : MonoBehaviour
         return PlayerPrefs.GetInt(playerScoreKey, 0);
     }
 
-    // ✅ تحديث سكور اللاعب
     public static void UpdateScore(int score)
     {
         int currentScore = PlayerPrefs.GetInt(playerScoreKey, 0);
@@ -112,5 +175,65 @@ public class AccountManager : MonoBehaviour
         PlayerPrefs.Save();
     }
 
-}
+    public async Task UpdatePlayerIDCloud(string newID)
+    {
+        if (string.IsNullOrEmpty(newID))
+        {
+            Debug.Log("❌ Please enter a valid Player ID!");
+            return;
+        }
 
+        var data = new Dictionary<string, object>
+        {
+            { "PlayerID", newID }
+        };
+
+        await CloudSaveService.Instance.Data.ForceSaveAsync(data);
+        Debug.Log($"✅ Player ID updated in cloud: {newID}");
+    }
+
+    public async Task<string> LoadPlayerIDFromCloud()
+    {
+        var keys = new HashSet<string> { "PlayerID" };
+        var savedData = await CloudSaveService.Instance.Data.LoadAsync(keys);
+
+        if (savedData.TryGetValue("PlayerID", out var id))
+        {
+            return id;
+        }
+
+        return "UnknownPlayer";
+    }
+
+
+    public async Task UpdatePlayerNameCloud(string newName)
+    {
+        if (string.IsNullOrEmpty(newName))
+        {
+            Debug.Log("❌ Please enter a valid name!");
+            return;
+        }
+
+        var data = new Dictionary<string, object>
+        {
+            { "PlayerName", newName }
+        };
+
+        await CloudSaveService.Instance.Data.ForceSaveAsync(data);
+        Debug.Log($"✅ Player name updated in cloud: {newName}");
+    }
+
+    public async Task<string> LoadPlayerNameFromCloud()
+    {
+        var keys = new HashSet<string> { "PlayerName" };
+        var savedData = await CloudSaveService.Instance.Data.LoadAsync(keys);
+
+        if (savedData.TryGetValue("PlayerName", out var name))
+        {
+            return name;
+        }
+
+        return "Unknown Player";
+    }   
+    
+}
