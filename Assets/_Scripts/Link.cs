@@ -1,67 +1,48 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI; // لاستيراد Button
 
 public class Link : MonoBehaviour
 {
-    //frist
-    public void GoToSecondPage()
+    public AudioSource audioSource; // مرجع لمكون AudioSource
+    public AudioClip clickSound; // مرجع للصوت (AudioClip)
+    private Button button; // مرجع للزر
+
+    void Start()
     {
-        SceneManager.LoadScene("second");
+        // الحصول على مكون الزر وإضافة مستمع للنقر
+        button = GetComponent<Button>();
+        if (button != null)
+        {
+            button.onClick.AddListener(() => PlaySound()); 
+        }
     }
 
-    public void GoToGamesPageFirst()
+    private void PlaySound()
     {
-        SceneManager.LoadScene("Games page");
+        if (audioSource != null && clickSound != null)
+        {
+            Debug.Log("Playing sound: " + clickSound.name);
+            audioSource.PlayOneShot(clickSound);
+        }
+        else
+        {
+            Debug.Log("AudioSource or ClickSound is missing!");
+        }
     }
 
-
-    //second
-    public void GoToThirdPage()
+    private void PlaySoundAndLoadScene(string sceneName)
     {
-        SceneManager.LoadScene("Third");
-    }
-    public void GoToGamesPageSecond()
-    {
-        SceneManager.LoadScene("Games page");
+        PlaySound(); // تشغيل الصوت
+        SceneManager.LoadScene(sceneName); // تحميل المشهد
     }
 
-    public void GoToFristPageSecond()
-    {
-        SceneManager.LoadScene("frist");
-    }
-
-
-    //Third
-    public void GoToFourthPage()
-    {
-        SceneManager.LoadScene("Fourth");
-    }
-    public void GoToGamesPageThird()
-    {
-        SceneManager.LoadScene("Games page");
-    }
-
-    public void GoToScondPageThird()
-    {
-        SceneManager.LoadScene("second");
-    }
-
-    //Fourth
-    public void GoToUm9MenuPage()
-    {
-        SceneManager.LoadScene("um9 menu page");
-    }
-    public void GoToGamesPageFourth()
-    {
-        SceneManager.LoadScene("Games page");
-    }
-
-    public void GoToThirdPageFourth()
-    {
-        SceneManager.LoadScene("Third");
-    }
-
-
-
-
+    public void GoToGamesPage() => PlaySoundAndLoadScene("Games page");
+    public void GoToFristPage() => PlaySoundAndLoadScene("Frist");
+    public void GoToSecondPage() => PlaySoundAndLoadScene("Second");
+    public void GoToThirdPage() => PlaySoundAndLoadScene("Third");
+    public void GoToFourthPage() => PlaySoundAndLoadScene("Fourth");
+    public void GoToFifthPage() => PlaySoundAndLoadScene("Fifth");
+    public void GoToSixthPage() => PlaySoundAndLoadScene("Sixth");
+    public void GoToChooseTheCharacterPage() => PlaySoundAndLoadScene("Choose");
 }
