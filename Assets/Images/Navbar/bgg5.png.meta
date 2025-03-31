@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: a9c4e40f1628871439aec7096589a5b4
+guid: c7b8d878c275f9347b7276d333edbe5e
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 2127277100465535675
-    second: buttonScissors_0
+      213: -8167873297706645491
+    second: bgg5_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -96,30 +96,17 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: iOS
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: buttonScissors_0
+      name: bgg5_0
       rect:
         serializedVersion: 2
-        x: 87
-        y: 71
-        width: 730
-        height: 868
+        x: 0
+        y: 0
+        width: 1086
+        height: 1934
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: bba3218804b958d10800000000000000
-      internalID: 2127277100465535675
+      spriteID: d080ccfc282e5ae80800000000000000
+      internalID: -8167873297706645491
       vertices: []
       indices: 
       edges: []
@@ -147,8 +134,7 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable:
-      buttonScissors_0: 2127277100465535675
+    nameFileIdTable: {}
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
