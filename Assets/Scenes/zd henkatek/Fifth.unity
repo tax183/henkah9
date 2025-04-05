@@ -131,10 +131,9 @@ GameObject:
   - component: {fileID: 58588164}
   - component: {fileID: 58588163}
   - component: {fileID: 58588162}
-  - component: {fileID: 58588160}
+  - component: {fileID: 58588161}
   - component: {fileID: 58588165}
   - component: {fileID: 58588166}
-  - component: {fileID: 58588167}
   m_Layer: 5
   m_Name: Button (Legacy) (2)
   m_TagString: Untagged
@@ -159,10 +158,10 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 511, y: 1202.3115}
+  m_AnchoredPosition: {x: 457.48962, y: 1071.8135}
   m_SizeDelta: {x: 262, y: 207}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &58588160
+  m_Pivot: {x: 0.6442275, y: 0.34787562}
+--- !u!114 &58588161
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -220,9 +219,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 58588166}
-        m_TargetAssemblyTypeName: LinkGirl, Assembly-CSharp
-        m_MethodName: GoToFifthPageGirl
+      - m_Target: {fileID: 58588161}
+        m_TargetAssemblyTypeName: Link, Assembly-CSharp
+        m_MethodName: GoToFourthPage
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -232,7 +231,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 58588167}
+      - m_Target: {fileID: 58588166}
         m_TargetAssemblyTypeName: UnityEngine.AudioSource, UnityEngine
         m_MethodName: Play
         m_Mode: 1
@@ -299,21 +298,7 @@ MonoBehaviour:
   RefrenceInput: {fileID: 0}
   ShowTashkeel: 0
   UseHinduNumbers: 0
---- !u!114 &58588166
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 58588158}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f6091fa0cd61dd14fb67d48d5109f6de, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  audioSource: {fileID: 0}
-  clickSound: {fileID: 0}
---- !u!82 &58588167
+--- !u!82 &58588166
 AudioSource:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -619,10 +604,9 @@ GameObject:
   - component: {fileID: 541112944}
   - component: {fileID: 541112943}
   - component: {fileID: 541112942}
-  - component: {fileID: 541112945}
+  - component: {fileID: 541112941}
   - component: {fileID: 541112946}
   - component: {fileID: 541112947}
-  - component: {fileID: 541112948}
   m_Layer: 5
   m_Name: Button (Legacy)
   m_TagString: Untagged
@@ -647,9 +631,23 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -506, y: -1192.1995}
+  m_AnchoredPosition: {x: -405.73706, y: -1114.5018}
   m_SizeDelta: {x: 272, y: 207}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &541112941
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 541112939}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0a44d49e79686947910084b2aa8e40e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  audioSource: {fileID: 0}
+  clickSound: {fileID: 0}
 --- !u!114 &541112942
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -694,9 +692,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 541112947}
-        m_TargetAssemblyTypeName: LinkGirl, Assembly-CSharp
-        m_MethodName: GoToGamesPageGirl
+      - m_Target: {fileID: 541112941}
+        m_TargetAssemblyTypeName: Link, Assembly-CSharp
+        m_MethodName: GoToGamesPage
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -706,7 +704,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 541112948}
+      - m_Target: {fileID: 541112947}
         m_TargetAssemblyTypeName: UnityEngine.AudioSource, UnityEngine
         m_MethodName: Play
         m_Mode: 1
@@ -757,20 +755,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 541112939}
   m_CullTransparentMesh: 1
---- !u!114 &541112945
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 541112939}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0a44d49e79686947910084b2aa8e40e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  audioSource: {fileID: 0}
-  clickSound: {fileID: 0}
 --- !u!114 &541112946
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -787,21 +771,7 @@ MonoBehaviour:
   RefrenceInput: {fileID: 0}
   ShowTashkeel: 0
   UseHinduNumbers: 0
---- !u!114 &541112947
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 541112939}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f6091fa0cd61dd14fb67d48d5109f6de, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  audioSource: {fileID: 0}
-  clickSound: {fileID: 0}
---- !u!82 &541112948
+--- !u!82 &541112947
 AudioSource:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1074,9 +1044,8 @@ GameObject:
   - component: {fileID: 1214233792}
   - component: {fileID: 1214233791}
   - component: {fileID: 1214233790}
-  - component: {fileID: 1214233788}
+  - component: {fileID: 1214233789}
   - component: {fileID: 1214233793}
-  - component: {fileID: 1214233794}
   m_Layer: 5
   m_Name: Button (Legacy) (1)
   m_TagString: Untagged
@@ -1101,10 +1070,10 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -496, y: 1175.3726}
+  m_AnchoredPosition: {x: -453.52466, y: 1072.8706}
   m_SizeDelta: {x: 292, y: 207}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1214233788
+  m_Pivot: {x: 0.37059033, y: 0.5}
+--- !u!114 &1214233789
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1162,9 +1131,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1214233793}
-        m_TargetAssemblyTypeName: LinkGirl, Assembly-CSharp
-        m_MethodName: GoToGamesPageGirl
+      - m_Target: {fileID: 1214233789}
+        m_TargetAssemblyTypeName: Link, Assembly-CSharp
+        m_MethodName: GoToSixthPage
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1174,7 +1143,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1214233794}
+      - m_Target: {fileID: 1214233793}
         m_TargetAssemblyTypeName: UnityEngine.AudioSource, UnityEngine
         m_MethodName: Play
         m_Mode: 1
@@ -1225,21 +1194,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1214233786}
   m_CullTransparentMesh: 1
---- !u!114 &1214233793
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1214233786}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f6091fa0cd61dd14fb67d48d5109f6de, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  audioSource: {fileID: 0}
-  clickSound: {fileID: 0}
---- !u!82 &1214233794
+--- !u!82 &1214233793
 AudioSource:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1489,7 +1444,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -909174273681970932, guid: c5287d82f0db68e46aa094d40e916847,
+  m_Sprite: {fileID: 8046419780733896574, guid: dbe35ecc966350c4b88fd8e97daea8eb,
     type: 3}
   m_Type: 0
   m_PreserveAspect: 0

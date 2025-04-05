@@ -18,31 +18,31 @@ EditorBuildSettings:
     path: Assets/Scenes/Games page.unity
     guid: 3c7dc21e2de663547a9439bbd64ca96a
   - enabled: 1
-    path: Assets/Scenes/zd henkatek/frist.unity
+    path: Assets/Scenes/zd henkatek/Frist.unity
     guid: 21d3eaa568e217545ba57feff049414f
   - enabled: 1
     path: Assets/Scenes/zd henkatek/Fourth girl.unity
     guid: 5084de8ff1c1d4b419f99de493b6b3d4
   - enabled: 1
-    path: Assets/Scenes/zd henkatek/frist girl.unity
+    path: Assets/Scenes/zd henkatek/Frist Girl.unity
     guid: 4482a4c3865690c4abd143ea5d4d9b16
   - enabled: 1
     path: Assets/Scenes/zd henkatek/Fourth.unity
     guid: aac30687d30c39345a5fe444de4c0b58
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/zd henkatek/last.unity
     guid: 1fcf068001cf64647b05a53fcb0ecf2e
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Levels.unity
     guid: b580a31765a684f4d98109dced20676a
   - enabled: 1
     path: Assets/Scenes/Main page.unity
     guid: cade5f10414541f45b5a8eefadc98b11
   - enabled: 1
-    path: Assets/Scenes/zd henkatek/second.unity
+    path: Assets/Scenes/zd henkatek/Second.unity
     guid: 182b1c3e2ee225e458136e77f99f0cb1
   - enabled: 1
-    path: Assets/Scenes/zd henkatek/second girl.unity
+    path: Assets/Scenes/zd henkatek/Second Girl.unity
     guid: 19bbaff1bfc633245abf557dddb22610
   - enabled: 1
     path: Assets/Scenes/zd henkatek/Third.unity
@@ -50,5 +50,20 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/zd henkatek/Third girl.unity
     guid: 4273ef384c768f149aa0531349099079
+  - enabled: 1
+    path: Assets/Scenes/zd henkatek/Fifth.unity
+    guid: 5d3150288eeeacd4fb2b4f18a7c97992
+  - enabled: 1
+    path: Assets/Scenes/zd henkatek/Fifth Girl.unity
+    guid: 2704d670130389247804bdbf036325f1
+  - enabled: 1
+    path: Assets/Scenes/zd henkatek/Choose.unity
+    guid: e45f078ff2948c749a4586b31f341910
+  - enabled: 1
+    path: Assets/Scenes/zd henkatek/Sixth Girl.unity
+    guid: 7795cfd0e1dd63a4da6af94f5f315030
+  - enabled: 1
+    path: Assets/Scenes/zd henkatek/Sixth.unity
+    guid: b4ea76c9b21585548a87e388944e2655
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0
