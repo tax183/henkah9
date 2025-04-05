@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class HumanHandController : MonoBehaviour
@@ -41,4 +41,31 @@ public class HumanHandController : MonoBehaviour
         buttonPaper.interactable = false;
         buttonScissors.interactable = false;
     }
+
+    public void PlayChoice(int choice)
+    {
+        if (hasChosen) return;
+
+        animator.SetBool("StartPlay", true);
+        animator.SetFloat("Blend", choice); // 0: Rock, 1: Paper, 2: Scissors
+        DisableButtons();
+
+        hasChosen = true;
+    }
+
+
+    public void ResetButtons()
+    {
+        hasChosen = false;
+
+        // نوقف الأنميشن من البداية ونرجّع للحالة Idle
+        animator.Rebind(); // ✅ هذا يعيد ضبط كل المتغيرات
+        animator.Update(0f); // يجعل التغيير فوري
+
+        if (buttonRock != null) buttonRock.interactable = true;
+        if (buttonPaper != null) buttonPaper.interactable = true;
+        if (buttonScissors != null) buttonScissors.interactable = true;
+    }
+
+
 }

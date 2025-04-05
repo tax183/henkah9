@@ -63,6 +63,14 @@ public class GameUIController : MonoBehaviour
     [SerializeField] private Button hardButton;
     [SerializeField] private Button startGameButton;
 
+    [SerializeField] private GameObject gameModePanel;
+    [SerializeField] private GameObject rpsPanel;
+    [SerializeField] private GameObject boardPanel;
+
+    public GameObject RPSAI_Panel;
+    public GameObject mainMenuPanel;
+
+
     private Color emptyColor = new Color(255, 255, 255, 0);
     private Color nonEmptyColor = new Color(255, 255, 255, 255);
 
@@ -111,6 +119,17 @@ static GameUIController()
         startGameButton.onClick.AddListener(StartGame);
 
         ShowGameModePopup();
+        gameModePanel.SetActive(true);  // تظهر أول شي
+        rpsPanel.SetActive(false);      // مخفية بالبداية
+        boardPanel.SetActive(false);    // البورد مخفي بالبداية
+        startPopup.SetActive(false);
+        RPSAI_Panel.SetActive(false);
+        difficultyPopup.SetActive(false);
+        
+
+        InitPawnButtonHandlers();
+
+        localButton.onClick.AddListener(ShowRPSPanel);
     }
 
     private void InitPawnButtonHandlers()
@@ -154,16 +173,19 @@ static GameUIController()
     {
         isAI = false;
         gameModePopup.SetActive(false);
-        StartGame(); // ✅ يبدأ اللعب مباشرة بدون نافذة اختيار المستوى
+
+        // بدلًا من StartGame مباشرة، ننتقل لشاشة RPS
+        ShowRPSPanel();
     }
+
 
     public void SelectM7nka()
     {
         isAI = true;
         gameModePopup.SetActive(false);
-        ShowDifficultyPopup();
-        // ✅ عرض نافذة اختيار المستوى فقط إذا كان الذكاء الاصطناعي مفعلاً
+        ShowDifficultyPopup(); // ❌ لا تشغل RPS هنا
     }
+
 
 
     private void ShowDifficultyPopup()
@@ -171,12 +193,19 @@ static GameUIController()
         difficultyPopup.SetActive(true);
     }
 
+
     public void SelectDifficulty(int depth)
     {
         searchDepth = depth;
         difficultyPopup.SetActive(false);
-        StartGame(); // بعد اختيار المستوى، يبدأ اللعب مباشرة
+        ShowRPSAI(); // ✅ الحين بس تشغل حجرة ورقة مقص بعد ما يختار الصعوبة
     }
+
+
+
+
+
+
 
     // ✅ زر "كانسل" في `Game Mode Popup`
     public void CancelGameModePopup()
@@ -194,8 +223,17 @@ static GameUIController()
     }
 
 
-    void StartGame()
+    public void StartGame()
     {
+        // 🔥 أول شيء: نخفي كل الواجهات غير البورد
+        gameModePanel.SetActive(false);
+        difficultyPopup.SetActive(false);
+        rpsPanel.SetActive(false);
+        RPSAI_Panel.SetActive(false);
+        boardPanel.SetActive(true); // ✅ نفعّل البورد فقط
+
+        board.SetActive(true); // تفعيل البورد الفعلي إن وجد
+
         board.SetActive(true); // تفعيل البورد عند بدء اللعب
 
         gameEngine = new GameEngine();
@@ -234,6 +272,18 @@ static GameUIController()
 
         Debug.Log("🎯 تم تجهيز الأحجار وإعداد البورد!");
         Debug.Log($"✅ بدأ اللعب: Player1 = Human | Player2 = {(isAI ? "AI" : "Human")} | Depth = {searchDepth}");
+
+        // ✅ تحديد من الفائز في RPS ليبدأ أولًا
+        if (RPSGameManager.whoStarts == 1)
+        {
+            Debug.Log("🎯 الدور الأول للاعب 1 (بفوزه في حجرة ورقة مقص)");
+            gameEngine.GameState.CurrentMovingPlayer = PlayerNumber.FirstPlayer;
+        }
+        else
+        {
+            Debug.Log("🎯 الدور الأول للاعب 2 (بفوزه في حجرة ورقة مقص)");
+            gameEngine.GameState.CurrentMovingPlayer = PlayerNumber.SecondPlayer;
+        }
     }
     private AiPlayer InitPlayer(PlayerNumber playerNumber)
     {
@@ -256,6 +306,22 @@ static GameUIController()
         return null; // في حالة اللعب المحلي، لا يوجد AI
     }
 
+    public void ShowRPSPanel()
+    {
+        gameModePanel.SetActive(false);
+        rpsPanel.SetActive(true);
+        boardPanel.SetActive(false);
+    }
+
+    public void ShowRPSAI()
+    {
+        RPSAI_Panel.SetActive(true);
+
+        // 🔴 طفي كل شيء ثاني
+        gameModePanel.SetActive(false);
+        rpsPanel.SetActive(false);
+        difficultyPopup.SetActive(false);
+    }
 
     private void OnBoardUpdated(Board newBoard)
     {
@@ -348,8 +414,10 @@ static GameUIController()
     {
         if (gameEngine != null)
         {
+            Debug.Log("🟡 اللاعب الحالي هو: " + gameEngine.GameState.CurrentMovingPlayer);
             gameEngine.HandleSelection(fieldIndex);
         }
+
     }
 
     private void Update()
@@ -414,4 +482,6 @@ static GameUIController()
             }
         }
     }
+
+
 }

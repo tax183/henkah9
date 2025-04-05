@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System;
+using System.Linq;
 
 public class FastAlphaBetaAiPlayer : AiPlayer
 {
@@ -10,110 +11,102 @@ public class FastAlphaBetaAiPlayer : AiPlayer
     PlayerNumber playerNumber;
 
     private int searchDepth;
+    private int maxStatesToSearch = 10; // تقليل عدد الحالات العشوائية المدروسة
 
     public FastAlphaBetaAiPlayer(GameEngine game, Heuristic evaluationHeuristic, PlayerNumber playerNumber, int searchDepth, Heuristic sortHeuristic = null)
     {
         this.game = game;
         this.evaluationHeuristic = evaluationHeuristic;
         this.playerNumber = playerNumber;
-        this.searchDepth = searchDepth * 2;
-        if(sortHeuristic == null)
-        {
-            this.sortHeuristic = evaluationHeuristic;
-        } else
-        {
-            this.sortHeuristic = sortHeuristic;
-        }
+        this.searchDepth = searchDepth ;
+        this.sortHeuristic = sortHeuristic ?? evaluationHeuristic;
     }
 
     public void MakeMove()
     {
         GameTreeNode bestPossibleMove = null;
         GameState currentState = game.GameState;
+
+        // تقليل العمق في بداية اللعبة لتسريع التفكير
+        int effectiveDepth = searchDepth;
+        int totalPawns = currentState.FirstPlayersPawnsLeft + currentState.SecondPlayersPawnsLeft;
+        if (totalPawns > 12) // يعني بداية اللعبة
+        {
+            effectiveDepth = Math.Min(searchDepth, 2);
+        }
+
         if (playerNumber == PlayerNumber.FirstPlayer)
         {
-            bestPossibleMove = MinMax(currentState, searchDepth, Double.NegativeInfinity, Double.PositiveInfinity, true);
+            bestPossibleMove = MinMax(currentState, effectiveDepth, double.NegativeInfinity, double.PositiveInfinity, true);
         }
         else
         {
-            bestPossibleMove = MinMax(currentState, searchDepth, Double.NegativeInfinity, Double.PositiveInfinity, false);
+            bestPossibleMove = MinMax(currentState, effectiveDepth, double.NegativeInfinity, double.PositiveInfinity, false);
         }
+
         game.MakeMove(bestPossibleMove.GameState);
     }
 
     private GameTreeNode MinMax(GameState currentState, int depth, double alpha, double beta, bool maximizingPlayer)
     {
         GameTreeNode bestMove = null;
+
         if (depth == 0 || currentState.WinningPlayer != PlayerNumber.None)
         {
             double evaluation = evaluationHeuristic.Evaluate(currentState);
-            bestMove = new GameTreeNode(currentState, evaluation);
+            return new GameTreeNode(currentState, evaluation);
         }
 
-        else if (maximizingPlayer)
+        List<GameState> nextStates = currentState.GetAllPossibleNextStates(
+            maximizingPlayer ? PlayerNumber.FirstPlayer : PlayerNumber.SecondPlayer
+        );
+
+        foreach (var state in nextStates)
         {
+            state.Evaluation = sortHeuristic.Evaluate(state);
+        }
+
+        if (maximizingPlayer)
+        {
+            nextStates = nextStates.OrderByDescending(s => s.Evaluation).Take(maxStatesToSearch).ToList();
             double maxEval = double.NegativeInfinity;
-            List<GameState> nextStates = currentState.GetAllPossibleNextStates(PlayerNumber.FirstPlayer);
-            foreach (var state in nextStates)
-            {
-                state.Evaluation = sortHeuristic.Evaluate(state);
-            }
-            nextStates.Sort((s1, s2) =>
-            {
-                return Math.Sign(s2.Evaluation - s1.Evaluation);
-            });
+
             foreach (var nextState in nextStates)
             {
-                GameTreeNode bestChild = MinMax(nextState, depth - 1, alpha, beta, false);
-                if (bestChild == null)
+                GameTreeNode child = MinMax(nextState, depth - 1, alpha, beta, false);
+                if (child.Evaluation > maxEval)
                 {
-                    currentState.GetAllPossibleNextStates(PlayerNumber.FirstPlayer);
+                    bestMove = new GameTreeNode(nextState, child.Evaluation);
+                    maxEval = child.Evaluation;
                 }
-                if (maxEval < bestChild.Evaluation)
-                {
-                    bestMove = new GameTreeNode(nextState, bestChild.Evaluation);
-                    maxEval = bestChild.Evaluation;
-                }
-                alpha = Math.Max(alpha, bestChild.Evaluation);
+                alpha = Math.Max(alpha, child.Evaluation);
                 if (beta <= alpha)
                 {
                     break;
                 }
             }
-
         }
         else
         {
+            nextStates = nextStates.OrderBy(s => s.Evaluation).Take(maxStatesToSearch).ToList();
             double minEval = double.PositiveInfinity;
-            List<GameState> nextStates = currentState.GetAllPossibleNextStates(PlayerNumber.SecondPlayer);
-            foreach (var state in nextStates)
-            {
-                state.Evaluation = sortHeuristic.Evaluate(state);
-            }
-            nextStates.Sort((s1, s2) =>
-            {
-                return Math.Sign(s1.Evaluation - s2.Evaluation);
-            });
+
             foreach (var nextState in nextStates)
             {
-                GameTreeNode bestChild = MinMax(nextState, depth - 1, alpha, beta, true);
-                if (bestChild == null)
+                GameTreeNode child = MinMax(nextState, depth - 1, alpha, beta, true);
+                if (child.Evaluation < minEval)
                 {
-                    currentState.GetAllPossibleNextStates(PlayerNumber.SecondPlayer);
+                    bestMove = new GameTreeNode(nextState, child.Evaluation);
+                    minEval = child.Evaluation;
                 }
-                if (minEval > bestChild.Evaluation)
-                {
-                    bestMove = new GameTreeNode(nextState, bestChild.Evaluation);
-                    minEval = bestChild.Evaluation;
-                }
-                beta = Math.Min(beta, bestChild.Evaluation);
+                beta = Math.Min(beta, child.Evaluation);
                 if (beta <= alpha)
                 {
                     break;
                 }
             }
-
         }
+
         return bestMove;
     }
 }
