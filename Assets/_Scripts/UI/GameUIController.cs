@@ -200,8 +200,15 @@ static GameUIController()
 
         gameEngine = new GameEngine();
         AiPlayer firstPlayer = null;
+
         AiPlayer secondPlayer = isAI
-            ? new FastAlphaBetaAiPlayer(gameEngine, new SimplePawnNumberHeuristic(), PlayerNumber.SecondPlayer, searchDepth, new SimplePawnNumberHeuristic())
+            ? new FastAlphaBetaAiPlayer(
+                gameEngine,
+                new CombinedHeuristic(searchDepth), // الهيرستك الذكي
+                PlayerNumber.SecondPlayer,
+                searchDepth,
+                new SimplePawnNumberHeuristic()     // فرز سريع
+            )
             : null;
 
         aiPlayersController = new PlayersController(firstPlayer, secondPlayer);
@@ -235,25 +242,23 @@ static GameUIController()
         Debug.Log("🎯 تم تجهيز الأحجار وإعداد البورد!");
         Debug.Log($"✅ بدأ اللعب: Player1 = Human | Player2 = {(isAI ? "AI" : "Human")} | Depth = {searchDepth}");
     }
+
     private AiPlayer InitPlayer(PlayerNumber playerNumber)
     {
-        // اللاعب الأول يكون إنسان دائمًا، لذلك نعيد null إذا كان PlayerNumber.FirstPlayer
         if (playerNumber == PlayerNumber.FirstPlayer)
         {
             return null;
         }
 
-        // اللاعب الثاني يكون ذكاءً اصطناعيًا فقط إذا تم اختيار "المحنكة"
         if (isAI)
         {
-            Heuristic bestHeuristic = new PawnMillNumberHeuristic(); // أفضل Heuristic دائمًا
-            Heuristic sortHeuristic = new SimplePawnNumberHeuristic(); // يتم استخدامه للفرز
+            Heuristic bestHeuristic = new CombinedHeuristic(searchDepth); // دمج حسب الصعوبة
+            Heuristic sortHeuristic = new SimplePawnNumberHeuristic();    // فرز خفيف
 
-            // إنشاء لاعب الذكاء الاصطناعي مع مستوى الصعوبة المحدد
             return new FastAlphaBetaAiPlayer(gameEngine, bestHeuristic, playerNumber, searchDepth, sortHeuristic);
         }
 
-        return null; // في حالة اللعب المحلي، لا يوجد AI
+        return null;
     }
 
 
@@ -414,4 +419,45 @@ static GameUIController()
             }
         }
     }
+    public class CombinedHeuristic : Heuristic
+    {
+        private SimplePawnNumberHeuristic simple = new SimplePawnNumberHeuristic();
+        private PawnMillNumberHeuristic mill = new PawnMillNumberHeuristic();
+        private PawnMoveNumberHeuristic move = new PawnMoveNumberHeuristic();
+
+        private double simpleWeight;
+        private double millWeight;
+        private double moveWeight;
+
+        public CombinedHeuristic(int difficulty)
+        {
+            switch (difficulty)
+            {
+                case 1: // سهل
+                    simpleWeight = 1.5;
+                    millWeight = 0.5;
+                    moveWeight = 0.3;
+                    break;
+                case 2: // متوسط
+                    simpleWeight = 1.0;
+                    millWeight = 1.0;
+                    moveWeight = 1.0;
+                    break;
+                case 3: // صعب
+                    simpleWeight = 0.8;
+                    millWeight = 1.5;
+                    moveWeight = 1.2;
+                    break;
+            }
+        }
+
+        public double Evaluate(GameState gameState)
+        {
+            double eval1 = simple.Evaluate(gameState);
+            double eval2 = mill.Evaluate(gameState);
+            double eval3 = move.Evaluate(gameState);
+            return (eval1 * simpleWeight) + (eval2 * millWeight) + (eval3 * moveWeight);
+        }
+    }
+
 }
