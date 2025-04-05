@@ -43,7 +43,7 @@ public class GameState
     public int FirstPlayersPawnsToPlaceLeft { get; private set; }
     public int SecondPlayersPawnsToPlaceLeft { get; private set; }
     public PlayerNumber WinningPlayer { get; private set; }
-    public PlayerNumber CurrentMovingPlayer { get; private set; }
+    public PlayerNumber CurrentMovingPlayer { get; set; }
     public PlayerNumber OtherPlayer
     {
         get
