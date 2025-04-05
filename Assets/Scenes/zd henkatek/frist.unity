@@ -321,9 +321,9 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 491.1305, y: 1178.6016}
+  m_AnchoredPosition: {x: 462.3352, y: 1088.1746}
   m_SizeDelta: {x: 244.26, y: 264.88}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_Pivot: {x: 0.628919, y: 0.5}
 --- !u!114 &452716400
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -467,7 +467,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 500
+  MaxDistance: 184.91064
   Pan2D: 0
   rolloffMode: 0
   BypassEffects: 0
@@ -580,8 +580,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -476.09454, y: 1178.6016}
-  m_SizeDelta: {x: 266.03, y: 264.8801}
+  m_AnchoredPosition: {x: -450.0578, y: 1087.032}
+  m_SizeDelta: {x: 203.03, y: 206.8802}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &771986327
 MonoBehaviour:
@@ -726,7 +726,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 500
+  MaxDistance: 179.65918
   Pan2D: 0
   rolloffMode: 0
   BypassEffects: 0
@@ -1103,7 +1103,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -476.09454, y: -1230.2548}
+  m_AnchoredPosition: {x: -385.66736, y: -1114.7089}
   m_SizeDelta: {x: 331.8109, y: 192.8794}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1756319580

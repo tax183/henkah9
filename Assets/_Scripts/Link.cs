@@ -46,3 +46,4 @@ public class Link : MonoBehaviour
     public void GoToSixthPage() => PlaySoundAndLoadScene("Sixth");
     public void GoToChooseTheCharacterPage() => PlaySoundAndLoadScene("Choose");
 }
+
