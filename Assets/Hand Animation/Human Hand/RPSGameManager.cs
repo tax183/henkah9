@@ -5,8 +5,8 @@ public class RPSGameManager : MonoBehaviour
 {
     public static int whoStarts = 1;
 
-    public GameObject rpsPanel; // بانل حجرة ورقة مقص
-    public GameObject boardPanel; // بانل البورد التراثية
+    public GameObject rpsPanel;
+    public GameObject boardPanel;
 
     public HumanHandController player1HandController;
     public HumanHandController player2HandController;
@@ -19,13 +19,21 @@ public class RPSGameManager : MonoBehaviour
     public GameObject panelResult;
     public Text resultText;
     public GameObject restartButton;
+    public Text congratsText;
 
+    public GameObject redPawnContainer;
+    public GameObject yellowPawnContainer;
 
+    public GameObject[] redPawns;
+    public GameObject[] yellowPawns; // 🟡 هذا هو المتغير الجديد اللي لازم يظهر في Inspector
+
+    private string lastWinner = "None";
     private int player1Choice = -1;
     private int player2Choice = -1;
 
     private enum PlayerTurn { Player1, Player2, ShowResult }
     private PlayerTurn currentTurn = PlayerTurn.Player1;
+
 
     public void OnChoice(int choice)
     {
@@ -34,7 +42,6 @@ public class RPSGameManager : MonoBehaviour
             player1Choice = choice;
             panelPlayer1.SetActive(false);
             panelPlayer2.SetActive(true);
-            // ❌ ما نشغل الأنميشن هنا
             currentTurn = PlayerTurn.Player2;
         }
         else if (currentTurn == PlayerTurn.Player2)
@@ -43,7 +50,6 @@ public class RPSGameManager : MonoBehaviour
             panelPlayer2.SetActive(false);
             panelResult.SetActive(true);
 
-            // ✅ نشغل اليدين الآن معًا
             player1HandObject.SetActive(true);
             player2HandObject.SetActive(true);
 
@@ -55,45 +61,39 @@ public class RPSGameManager : MonoBehaviour
 
             if (result == "تعادل!")
             {
-                // ❌ نخفي زر الإعادة والنص أولًا قبل تشغيل الأنميشن
                 restartButton.SetActive(false);
-                resultText.text = ""; // نخفي النص
-
-                // ✅ تشغيل الأنميشن
-                player1HandObject.SetActive(true);
-                player2HandObject.SetActive(true);
-
-                player1HandController.PlayChoice(player1Choice);
-                player2HandController.PlayChoice(player2Choice);
-
-                // ✅ بعد 4 ثانية (وقت كافي للأنميشن) نظهر زر الإعادة والنص
+                resultText.text = "";
                 Invoke(nameof(ShowResultTextAndRestartButton), 4f);
             }
-
-
             else
             {
                 restartButton.SetActive(false);
-                resultText.text = ""; // ❌ نخفي النص مؤقتًا
-
-                // ✅ نشغل الأنميشن أولًا
-                player1HandObject.SetActive(true);
-                player2HandObject.SetActive(true);
-
-                player1HandController.PlayChoice(player1Choice);
-                player2HandController.PlayChoice(player2Choice);
-
-                // ✅ بعد 4 ثواني، نظهر تكست الفائز
+                resultText.text = "";
                 Invoke(nameof(ShowWinnerText), 4f);
-
-                // ✅ بعد 4.5 ثانية (وقت كافي للأنميشن) يتم الانتقال للبورد
                 Invoke(nameof(TransitionToBoard), 4.5f);
-
                 currentTurn = PlayerTurn.ShowResult;
             }
 
             currentTurn = PlayerTurn.ShowResult;
         }
+    }
+
+    string DetermineWinner(int p1, int p2)
+    {
+        if (p1 == p2)
+        {
+            lastWinner = "None";
+            return "تعادل!";
+        }
+
+        if ((p1 == 0 && p2 == 2) || (p1 == 1 && p2 == 0) || (p1 == 2 && p2 == 1))
+        {
+            lastWinner = "Player1";
+            return "اللاعب الأول فاز!";
+        }
+
+        lastWinner = "Player2";
+        return "اللاعب الثاني فاز!";
     }
 
     private void ShowRestartButton()
@@ -103,22 +103,13 @@ public class RPSGameManager : MonoBehaviour
 
     private void ShowResultTextAndRestartButton()
     {
-        resultText.text = "تعادل!"; // إظهار النص
-        restartButton.SetActive(true); // إظهار زر الإعادة
+        resultText.text = "تعادل!";
+        restartButton.SetActive(true);
     }
 
     private void ShowWinnerText()
     {
         resultText.text = DetermineWinner(player1Choice, player2Choice);
-    }
-
-
-    string DetermineWinner(int p1, int p2)
-    {
-        if (p1 == p2) return "تعادل!";
-        if ((p1 == 0 && p2 == 2) || (p1 == 1 && p2 == 0) || (p1 == 2 && p2 == 1))
-            return "اللاعب الأول فاز!";
-        return "اللاعب الثاني فاز!";
     }
 
     public void RestartGame()
@@ -138,20 +129,60 @@ public class RPSGameManager : MonoBehaviour
 
         restartButton.SetActive(false);
 
+        ActivateNextPawnChoice(); // ✅ تفعيل الحجر المناسب حسب الفائز
     }
 
-    // ✅ دالة الانتقال بعد انتهاء الأنميشن
     private void TransitionToBoard()
     {
-        // ✅ نخفي RPS ونظهر البورد
         rpsPanel.SetActive(false);
         boardPanel.SetActive(true);
 
-        // ✅ تحديد من الفائز ليبدأ أولًا
-        RPSGameManager.whoStarts = resultText.text == "اللاعب الأول فاز!" ? 1 : 2;
+        whoStarts = resultText.text == "اللاعب الأول فاز!" ? 2 : 1;
 
-        // ✅ نبدأ اللعبة
         GameObject.Find("GameUIController").GetComponent<GameUIController>().StartGame();
+
+        int stonesLeft = (whoStarts == 2)
+            ? GameEngine.Instance.GameState.SecondPlayersPawnsToPlaceLeft
+            : GameEngine.Instance.GameState.FirstPlayersPawnsToPlaceLeft;
+
+        if (stonesLeft >= 0 && stonesLeft < 9)
+        {
+            if (whoStarts == 2)
+                yellowPawns[stonesLeft].SetActive(false);
+            else
+                redPawns[stonesLeft].SetActive(false);
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public void ActivateNextPawnChoice()
+    {
+        if (lastWinner == "Player1")
+        {
+            redPawnContainer.SetActive(true);
+            yellowPawnContainer.SetActive(false);
+        }
+        else if (lastWinner == "Player2")
+        {
+            redPawnContainer.SetActive(false);
+            yellowPawnContainer.SetActive(true);
+        }
+        else
+        {
+            redPawnContainer.SetActive(false);
+            yellowPawnContainer.SetActive(false);
+        }
     }
 }
-

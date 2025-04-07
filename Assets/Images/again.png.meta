@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: c7e3c21cf8b67ab4cb5d54acb9cf1d72
+guid: e531583a41fa9da47b45d99fd059d58e
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 7052123025889304247
-    second: wrg_0
+      213: -2844171462857459135
+    second: again_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -109,17 +109,30 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: wrg_0
+      name: again_0
       rect:
         serializedVersion: 2
-        x: 264
-        y: 113
-        width: 517
-        height: 795
+        x: 0
+        y: 0
+        width: 2712
+        height: 708
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +141,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 7be1c7e378c2ed160800000000000000
-      internalID: 7052123025889304247
+      spriteID: 14af314af197788d0800000000000000
+      internalID: -2844171462857459135
       vertices: []
       indices: 
       edges: []
@@ -148,7 +161,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      wrg_0: 7052123025889304247
+      pepar-button_0: -1483390185408049799
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
