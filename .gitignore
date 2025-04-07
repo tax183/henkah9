@@ -22,6 +22,8 @@
 
 # Gradle cache directory
 .gradle/
+UserSettings/
+
 
 # Jetbrain Rider Cache
 .idea/
