@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 3feb0356febea6e45838850363b45d45
+guid: f9e0870a4d6420a41b1dd564b5a8760b
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -511257852077581788
-    second: WhatsApp Image 2025-02-10 at 14.35.21_63d5b398 (1)_0
+      213: -3246421068799549969
+    second: Spark1_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -37,7 +37,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -46,7 +46,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -72,7 +72,7 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 2048
+    maxTextureSize: 4096
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 1
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: WhatsApp Image 2025-02-10 at 14.35.21_63d5b398 (1)_0
+      name: Spark1_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 384
-        height: 476
+        x: 137
+        y: 56
+        width: 1533
+        height: 1530
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 42a594a31b5a7e8f0800000000000000
-      internalID: -511257852077581788
+      spriteID: feddbdafc3562f2d0800000000000000
+      internalID: -3246421068799549969
       vertices: []
       indices: 
       edges: []
@@ -138,7 +138,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      WhatsApp Image 2025-02-10 at 14.35.21_63d5b398 (1)_0: -511257852077581788
+      Spark1_0: -3246421068799549969
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
