@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 044d1f641a039bf458345aa57c4afc13
+guid: 1d4e6bb105736a843bd68371c4e4099d
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -1483390185408049799
-    second: pepar-button_0
+      213: -8246371207439912048
+    second: Back 1_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: pepar-button_0
+      name: Back 1_0
       rect:
         serializedVersion: 2
-        x: 21
-        y: 17
-        width: 184
-        height: 219
+        x: 0
+        y: 0
+        width: 4320
+        height: 7680
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 97dc3775c70f96be0800000000000000
-      internalID: -1483390185408049799
+      spriteID: 093f886f3110f8d80800000000000000
+      internalID: -8246371207439912048
       vertices: []
       indices: 
       edges: []

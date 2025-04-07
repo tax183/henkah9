@@ -1,13 +1,10 @@
 fileFormatVersion: 2
-guid: aeec956888fbc1b4eaa5bbf292201969
+guid: adf7f8f404b58254a80843f3744352f5
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 2688607190631232757
-    second: WhatsApp Image 2025-02-10 at 14.35.21_63d5b398 (2)_0
-  - first:
-      213: 2233739493126110566
-    second: WhatsApp Image 2025-02-10 at 14.35.21_63d5b398 (2)_1
+      213: -2670888596053199620
+    second: Papper_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -40,7 +37,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -75,7 +72,7 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 2048
+    maxTextureSize: 4096
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 1
@@ -116,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: WhatsApp Image 2025-02-10 at 14.35.21_63d5b398 (2)_0
+      name: Papper_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 622
-        height: 531
+        x: 79
+        y: 70
+        width: 738
+        height: 860
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -131,30 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 5f4b22abef9df4520800000000000000
-      internalID: 2688607190631232757
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: WhatsApp Image 2025-02-10 at 14.35.21_63d5b398 (2)_1
-      rect:
-        serializedVersion: 2
-        x: 248
-        y: 0
-        width: 42
-        height: 9
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 66dfa80fb36dffe10800000000000000
-      internalID: 2233739493126110566
+      spriteID: cf47b9d09f81fead0800000000000000
+      internalID: -2670888596053199620
       vertices: []
       indices: 
       edges: []
@@ -173,8 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      WhatsApp Image 2025-02-10 at 14.35.21_63d5b398 (2)_0: 2688607190631232757
-      WhatsApp Image 2025-02-10 at 14.35.21_63d5b398 (2)_1: 2233739493126110566
+      Papper_0: -2670888596053199620
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
