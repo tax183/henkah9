@@ -41,13 +41,15 @@ public class PlayersController
         this.currentPlayerTurn = playerNumber;
         this.gameEngineReady = true;
     }
-
     private void HandleAiMove(AiPlayer player)
     {
         gameEngineReady = false;
-        if(player != null)
+        if (player != null)
         {
             player.MakeMove();
+
+            // ✅ تحديث الواجهة بعد أول حركة للذكاء الصناعي
+            UnityEngine.Object.FindObjectOfType<GameUIController>().UpdateStonesUI(2);
         }
     }
 }

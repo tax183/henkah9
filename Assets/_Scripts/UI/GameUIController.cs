@@ -163,6 +163,7 @@ static GameUIController()
     }
 
 
+
     private void ShowGameModePopup()
     {
         gameModePopup.SetActive(true);
@@ -232,14 +233,31 @@ static GameUIController()
         RPSAI_Panel.SetActive(false);
         boardPanel.SetActive(true); // ✅ نفعّل البورد فقط
 
-        board.SetActive(true); // تفعيل البورد الفعلي إن وجد
-
         board.SetActive(true); // تفعيل البورد عند بدء اللعب
 
         gameEngine = new GameEngine();
+
+        // ✅ تحديد من الفائز في RPS ليبدأ أولًا
+        if (RPSGameManager.whoStarts == 1)
+        {
+            Debug.Log("🎯 الدور الأول للاعب 1 (بفوزه في حجرة ورقة مقص)");
+            gameEngine.GameState.CurrentMovingPlayer = PlayerNumber.FirstPlayer;
+        }
+        else
+        {
+            Debug.Log("🎯 الدور الأول للاعب 2 (بفوزه في حجرة ورقة مقص)");
+            gameEngine.GameState.CurrentMovingPlayer = PlayerNumber.SecondPlayer;
+        }
+
         AiPlayer firstPlayer = null;
         AiPlayer secondPlayer = isAI
-            ? new FastAlphaBetaAiPlayer(gameEngine, new SimplePawnNumberHeuristic(), PlayerNumber.SecondPlayer, searchDepth, new SimplePawnNumberHeuristic())
+            ? new FastAlphaBetaAiPlayer(
+                gameEngine,
+                new SimplePawnNumberHeuristic(),
+                PlayerNumber.SecondPlayer,
+                searchDepth,
+                new SimplePawnNumberHeuristic()
+            )
             : null;
 
         aiPlayersController = new PlayersController(firstPlayer, secondPlayer);
@@ -272,18 +290,11 @@ static GameUIController()
 
         Debug.Log("🎯 تم تجهيز الأحجار وإعداد البورد!");
         Debug.Log($"✅ بدأ اللعب: Player1 = Human | Player2 = {(isAI ? "AI" : "Human")} | Depth = {searchDepth}");
+        if (gameEngine.GameState.CurrentMovingPlayer == PlayerNumber.SecondPlayer)
+        {
+            aiPlayersController.OnPlayerTurnChanged(PlayerNumber.SecondPlayer);
+        }
 
-        // ✅ تحديد من الفائز في RPS ليبدأ أولًا
-        if (RPSGameManager.whoStarts == 1)
-        {
-            Debug.Log("🎯 الدور الأول للاعب 1 (بفوزه في حجرة ورقة مقص)");
-            gameEngine.GameState.CurrentMovingPlayer = PlayerNumber.FirstPlayer;
-        }
-        else
-        {
-            Debug.Log("🎯 الدور الأول للاعب 2 (بفوزه في حجرة ورقة مقص)");
-            gameEngine.GameState.CurrentMovingPlayer = PlayerNumber.SecondPlayer;
-        }
     }
     private AiPlayer InitPlayer(PlayerNumber playerNumber)
     {
