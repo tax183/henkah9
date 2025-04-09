@@ -39,11 +39,16 @@ public class Link : MonoBehaviour
 
     public void GoToGamesPage() => PlaySoundAndLoadScene("Games page");
     public void GoToFristPage() => PlaySoundAndLoadScene("Frist");
+
     public void GoToSecondPage() => PlaySoundAndLoadScene("Second");
     public void GoToThirdPage() => PlaySoundAndLoadScene("Third");
     public void GoToFourthPage() => PlaySoundAndLoadScene("Fourth");
     public void GoToFifthPage() => PlaySoundAndLoadScene("Fifth");
     public void GoToSixthPage() => PlaySoundAndLoadScene("Sixth");
+    public void GoToSeventhPage() => PlaySoundAndLoadScene("Seventh");
+    
     public void GoToChooseTheCharacterPage() => PlaySoundAndLoadScene("Choose");
 }
+
+
 
