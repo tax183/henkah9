@@ -33,8 +33,8 @@ public class Link : MonoBehaviour
 
     private void PlaySoundAndLoadScene(string sceneName)
     {
-        PlaySound(); // تشغيل الصوت
-        SceneManager.LoadScene(sceneName); // تحميل المشهد
+        PlaySound();
+        SceneManager.LoadScene(sceneName); 
     }
 
     public void GoToGamesPage() => PlaySoundAndLoadScene("Games page");
