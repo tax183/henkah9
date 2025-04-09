@@ -44,5 +44,6 @@ public class LinkGirl : MonoBehaviour
     public void GoToFourthPageGirl() => PlaySoundAndLoadScene("Fourth Girl");
     public void GoToFifthPageGirl() => PlaySoundAndLoadScene("Fifth Girl");
     public void GoToSixthPageGirl() => PlaySoundAndLoadScene("Sixth Girl");
+    public void GoToSeventhPageGirl() => PlaySoundAndLoadScene("Seventh Girl");
     public void GoToChooseTheCharacterPageGirl() => PlaySoundAndLoadScene("Choose");
 }

@@ -65,5 +65,11 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/zd henkatek/Sixth.unity
     guid: b4ea76c9b21585548a87e388944e2655
+  - enabled: 1
+    path: Assets/Scenes/zd henkatek/Seventh.unity
+    guid: c3bd1cc48ac609842ac103af08af5f28
+  - enabled: 1
+    path: Assets/Scenes/zd henkatek/Seventh Girl.unity
+    guid: 3d113d78b36e4504b81635e5532e8685
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0

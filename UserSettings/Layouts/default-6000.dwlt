@@ -19,7 +19,7 @@ MonoBehaviour:
     width: 1366
     height: 685
   m_ShowMode: 4
-  m_Title: Simulator
+  m_Title: Hierarchy
   m_RootView: {fileID: 2}
   m_MinSize: {x: 875, y: 382}
   m_MaxSize: {x: 10000, y: 10000}
@@ -360,7 +360,7 @@ MonoBehaviour:
   m_UseMipMap: 0
   m_SimulatorState:
     controlPanelVisible: 0
-    controlPanelWidth: NaN
+    controlPanelWidth: 0
     controlPanelFoldoutKeys:
     - UnityEditor.DeviceSimulation.ApplicationSettingsPlugin
     controlPanelFoldoutValues: 00
@@ -833,10 +833,10 @@ MonoBehaviour:
       displayed: 1
       id: Overlays/OverlayMenu
       index: 1
-      contents: '{"m_Layout":1,"m_Collapsed":false,"m_Floating":false,"m_FloatingSnapOffset":{"x":-266.6666564941406,"y":-106.66668701171875},"m_SnapOffsetDelta":{"x":0.0,"y":0.0},"m_FloatingSnapCorner":3,"m_Size":{"x":0.0,"y":0.0},"m_SizeOverridden":false}'
+      contents: '{"m_Layout":1,"m_Collapsed":false,"m_Floating":false,"m_FloatingSnapOffset":{"x":-285.6000061035156,"y":-208.0},"m_SnapOffsetDelta":{"x":0.0,"y":0.0},"m_FloatingSnapCorner":3,"m_Size":{"x":0.0,"y":0.0},"m_SizeOverridden":false}'
       floating: 0
       collapsed: 0
-      snapOffset: {x: -266.66666, y: -106.66669}
+      snapOffset: {x: -285.6, y: -208}
       snapOffsetDelta: {x: 0, y: 0}
       snapCorner: 3
       layout: 1
@@ -1183,14 +1183,14 @@ MonoBehaviour:
       e31: 0
       e32: 0
       e33: 1
-    - e00: 0.70757043
+    - e00: 0.115
       e01: 0
       e02: 0
-      e03: -130.10141
+      e03: -30.49553
       e10: 0
-      e11: 0.70757043
+      e11: 0.115
       e12: 0
-      e13: 125.84366
+      e13: 232.45859
       e20: 0
       e21: 0
       e22: 1
@@ -1200,10 +1200,10 @@ MonoBehaviour:
       e32: 0
       e33: 1
   m_PreviewAnimator: {fileID: 0}
-  m_AnimatorController: {fileID: 9100000, guid: 6a86d8cdc1d07864f9c4847c174f66e5,
+  m_AnimatorController: {fileID: 9100000, guid: 047974367bf3ac24492afcf9cc166092,
     type: 2}
   m_BreadCrumbs:
-  - m_Target: {fileID: 1308393363078099349, guid: 6a86d8cdc1d07864f9c4847c174f66e5,
+  - m_Target: {fileID: -5654294333182161336, guid: 047974367bf3ac24492afcf9cc166092,
       type: 2}
     m_ScrollPosition: {x: 0, y: 0}
   stateMachineGraph: {fileID: 0}

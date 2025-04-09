@@ -33,8 +33,8 @@ public class Link : MonoBehaviour
 
     private void PlaySoundAndLoadScene(string sceneName)
     {
-        PlaySound(); // تشغيل الصوت
-        SceneManager.LoadScene(sceneName); // تحميل المشهد
+        PlaySound();
+        SceneManager.LoadScene(sceneName); 
     }
 
     public void GoToGamesPage() => PlaySoundAndLoadScene("Games page");
@@ -44,6 +44,10 @@ public class Link : MonoBehaviour
     public void GoToFourthPage() => PlaySoundAndLoadScene("Fourth");
     public void GoToFifthPage() => PlaySoundAndLoadScene("Fifth");
     public void GoToSixthPage() => PlaySoundAndLoadScene("Sixth");
+    public void GoToSeventhPage() => PlaySoundAndLoadScene("Seventh");
+    
     public void GoToChooseTheCharacterPage() => PlaySoundAndLoadScene("Choose");
 }
+
+
 
