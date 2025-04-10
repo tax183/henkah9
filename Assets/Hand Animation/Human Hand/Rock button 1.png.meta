@@ -148,7 +148,11 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
+<<<<<<< HEAD:Assets/Hand Animation/Human Hand/Rock button 1.png.meta
       Rock button 1_0: -2616267583948491717
+=======
+      score_0: -2973451351822383342
+>>>>>>> ashwaq:Assets/Images/score.png.meta
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
