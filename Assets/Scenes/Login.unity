@@ -289,7 +289,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 694968119}
-  - component: {fileID: 694968118}
   m_Layer: 0
   m_Name: ProfileManager
   m_TagString: Untagged
@@ -297,26 +296,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &694968118
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 694968117}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c3a31db1b83ac9740b9fe2d78db861aa, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  nameInputField: {fileID: 0}
-  idInputField: {fileID: 0}
-  editNameButton: {fileID: 0}
-  editIDButton: {fileID: 0}
-  saveButton: {fileID: 0}
-  changeProfilePicButton: {fileID: 0}
-  profileImage: {fileID: 0}
-  goToGameButton: {fileID: 0}
 --- !u!4 &694968119
 Transform:
   m_ObjectHideFlags: 0

@@ -8,6 +8,10 @@ using System.IO;
 using UnityEngine.EventSystems;
 using System.Linq;
 using UnityEngine.SceneManagement;
+using Unity.Services.Authentication;
+using Unity.Services.CloudSave;
+using Unity.Services.Core;
+
 
 public class GameUIController : MonoBehaviour
 {
@@ -67,6 +71,14 @@ public class GameUIController : MonoBehaviour
     [SerializeField] private GameObject rpsPanel;
     [SerializeField] private GameObject boardPanel;
 
+    [SerializeField] private GameObject profileMask; 
+    [SerializeField] private Image profileImagePreview;
+    [SerializeField] private Image aiAvatarImage;
+    [SerializeField] private TextMeshProUGUI profileNameText;
+    [SerializeField] private TextMeshProUGUI aiNameText;
+
+
+    private string aiPlayerName = "Muhankah";
     public GameObject RPSAI_Panel;
     public GameObject mainMenuPanel;
 
@@ -107,6 +119,9 @@ static GameUIController()
     }
     private void Awake()
     {
+        profileMask.SetActive(false); // عشان ما تطلع إلا لما يتحقق الشرط
+        aiAvatarImage.gameObject.SetActive(false);
+        profileNameText.gameObject.SetActive(false);
         board.SetActive(false); // تعطيل البورد عند بدء اللعبة
 
         InitPawnButtonHandlers();
@@ -200,6 +215,20 @@ static GameUIController()
         searchDepth = depth;
         difficultyPopup.SetActive(false);
         ShowRPSAI(); // ✅ الحين بس تشغل حجرة ورقة مقص بعد ما يختار الصعوبة
+        if (isAI)
+        {
+            LoadProfileImagePreview();
+        }
+        if (isAI && aiAvatarImage != null)
+        {
+            aiAvatarImage.gameObject.SetActive(true);
+        }
+        if (isAI && aiNameText != null)
+        {
+            aiNameText.text = aiPlayerName;
+            aiNameText.gameObject.SetActive(true);
+        }
+
     }
 
 
@@ -296,6 +325,51 @@ static GameUIController()
         }
 
     }
+
+    private async void LoadProfileImagePreview()
+    {
+        profileMask.SetActive(false);
+        profileNameText.gameObject.SetActive(false);
+
+        if (UnityServices.State == Unity.Services.Core.ServicesInitializationState.Uninitialized)
+            await UnityServices.InitializeAsync();
+
+        if (!AuthenticationService.Instance.IsSignedIn)
+            await AuthenticationService.Instance.SignInAnonymouslyAsync();
+
+        // تحميل كل البيانات دفعة وحدة
+        var keys = new HashSet<string> { "ProfileImage", "PlayerName", "SelectedCharacter" };
+        var savedData = await CloudSaveService.Instance.Data.LoadAsync(keys);
+
+        // ✅ تحميل الصورة حسب الشخصية المختارة
+        if (savedData.TryGetValue("SelectedCharacter", out var character))
+        {
+            string fileName = character == "girl" ? "girl.png" : "boy.png";
+            string path = Path.Combine(Application.dataPath, $"Images/{fileName}");
+
+            if (File.Exists(path))
+            {
+                byte[] imageBytes = File.ReadAllBytes(path);
+                Texture2D tex = new Texture2D(2, 2);
+                tex.LoadImage(imageBytes);
+                profileImagePreview.sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f));
+                profileMask.SetActive(true);
+            }
+        }
+
+        // ✅ تحميل الاسم
+        if (savedData.TryGetValue("PlayerName", out var playerName))
+        {
+            profileNameText.text = playerName;
+            profileNameText.gameObject.SetActive(true);
+        }
+    }
+
+
+
+
+
+
     private AiPlayer InitPlayer(PlayerNumber playerNumber)
     {
         // اللاعب الأول يكون إنسان دائمًا، لذلك نعيد null إذا كان PlayerNumber.FirstPlayer
