@@ -16,6 +16,9 @@ public class AccountManager : MonoBehaviour
     [SerializeField] private GameObject WarningImage; // صورة التحذير
     [SerializeField] private GameObject aiButton; // زر المحنكه
     public static bool isGuest = true;
+    [SerializeField] private GameObject playtayp;      // القائمة اللي فيها المحلي والمحنكه
+    [SerializeField] private GameObject difficulty;    // قائمة اختيار الصعوبة
+   // لوحة التحذير
 
 
 
@@ -44,8 +47,8 @@ public class AccountManager : MonoBehaviour
             PlayerPrefs.SetString(playerIDKey, AuthenticationService.Instance.PlayerId);
             PlayerPrefs.Save();
         }
-
-        // ✅ منع تغيير المشهد إذا اللاعب ضيف
+        // ❌ هذا الجزء هو اللي يسبب الرجوع الإجباري
+        /*
         if (!IsGuest() && PlayerPrefs.HasKey(playerIDKey))
         {
             Scene currentScene = SceneManager.GetActiveScene();
@@ -54,6 +57,8 @@ public class AccountManager : MonoBehaviour
                 SceneManager.LoadScene("ProfileScene");
             }
         }
+        */
+
     }
 
     public void OpenProfileScene()
@@ -126,10 +131,26 @@ public class AccountManager : MonoBehaviour
     public void RegisterAsRealPlayer()
     {
         isGuest = false; // ✅ كأنك فتحت القفل
-        PlayerPrefs.SetInt("Guest", 0); // نخزنها لمرات الجاي
+        PlayerPrefs.SetInt(guestKey, 0);
+        // نخزنها لمرات الجاي
         Debug.Log("✅ تم تفعيل الحساب كلاعب مسجل.");
     }
 
+    public void GoToLoginScene()
+    {
+        SceneManager.LoadScene("Login");
+    }
+    public void CloseWarning()
+    {
+        Debug.Log("❎ إغلاق التحذير");
+
+        if (WarningImage != null) WarningImage.SetActive(false); // إخفاء التحذير
+        if (IsGuest())
+        {
+            if (playtayp != null) playtayp.SetActive(true);       // رجوع لقائمة المحلي/المحنكه
+            if (difficulty != null) difficulty.SetActive(false);  // منع فتح الصعوبة
+        }
+    }
 
 
     public void ShowWarningImage()
@@ -137,9 +158,29 @@ public class AccountManager : MonoBehaviour
         if (WarningImage != null)
         {
             WarningImage.SetActive(true);
-            Invoke("HideWarningImage", 3f); // إخفاء الصورة بعد 3 ثوانٍ تلقائياً
+           // إخفاء الصورة بعد 3 ثوانٍ تلقائياً
         }
     }
+
+
+    public void OnClick_ai()
+    {
+        Debug.Log("🟡 AI button clicked");
+
+        if (IsGuest())
+        {
+            Debug.LogWarning("❗ الضيف لا يمكنه الدخول للمحنكة.");
+
+            if (WarningImage != null) WarningImage.SetActive(true); // عرض التحذير
+            if (difficulty != null) difficulty.SetActive(false);    // تأكد ما تظهر الصعوبة
+            return;
+        }
+
+        Debug.Log("✅ اللاعب مسجل، تفعيل المحنكه...");
+        if (difficulty != null) difficulty.SetActive(true);         // عرض قائمة الصعوبة
+        if (playtayp != null) playtayp.SetActive(false);            // إخفاء قائمة المحلي/المحنكه
+    }
+
 
     private void HideWarningImage()
     {
