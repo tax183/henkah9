@@ -101,9 +101,10 @@ public class ProfileManager : MonoBehaviour
     {
         if (UnityServices.State == ServicesInitializationState.Uninitialized)
             await UnityServices.InitializeAsync();
-
         if (!AuthenticationService.Instance.IsSignedIn)
+        {
             await AuthenticationService.Instance.SignInAnonymouslyAsync();
+        }
 
     }
 
@@ -154,7 +155,7 @@ public class ProfileManager : MonoBehaviour
         });
 
     }
-   
+
     public void GoToGamesPage()
     {
         UnityEngine.SceneManagement.SceneManager.LoadScene("Games page");

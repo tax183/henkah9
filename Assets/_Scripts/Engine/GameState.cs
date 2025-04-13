@@ -127,6 +127,10 @@ public class GameState
         MovesMade = other.MovesMade;
         MovesUntilNow = string.Copy(other.MovesUntilNow);
     }
+    public void TriggerGameStateChanged()
+    {
+        OnGameStateChanged();
+    }
     public void HandleSelection(int fieldIndex)
     {
         if (PawnsToRemove > 0)

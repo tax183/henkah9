@@ -45,15 +45,16 @@ public class AccountManager : MonoBehaviour
             PlayerPrefs.Save();
         }
 
-        // ✅ منع تغيير المشهد إذا اللاعب ضيف
-        if (!IsGuest() && PlayerPrefs.HasKey(playerIDKey))
-        {
-            Scene currentScene = SceneManager.GetActiveScene();
-            if (currentScene.name != "ProfileScene")
-            {
-                SceneManager.LoadScene("ProfileScene");
-            }
-        }
+        /* // ✅ منع تغيير المشهد إذا اللاعب ضيف
+         if (!IsGuest() && PlayerPrefs.HasKey(playerIDKey))
+         {
+             Scene currentScene = SceneManager.GetActiveScene();
+             if (currentScene.name != "ProfileScene")
+             {
+                 SceneManager.LoadScene("ProfileScene");
+             }
+         }
+     } */
     }
 
     public void OpenProfileScene()

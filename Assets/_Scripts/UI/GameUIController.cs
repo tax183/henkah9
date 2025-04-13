@@ -106,6 +106,7 @@ public class GameUIController : MonoBehaviour
     [SerializeField] private Transform[] allowedPositions; // جميع أماكن الأحجار على البورد
     private int player1Stones = 9;
     private int player2Stones = 9;
+    [SerializeField] private GameObject lobbyPanel;
 
     private static Dictionary<Vector3, GameObject> occupiedPositions = new Dictionary<Vector3, GameObject>(); // تخزين الأحجار في البورد
 
@@ -177,7 +178,10 @@ static GameUIController()
         }
     }
 
-
+    public void OnPlayWithFriendClicked()
+    {
+        lobbyPanel.SetActive(true);
+    }
 
     private void ShowGameModePopup()
     {
@@ -497,12 +501,25 @@ static GameUIController()
 
     private void HandleButtonClick(int fieldIndex)
     {
+        // ✅ شرط الأونلاين فقط: يمنع الضغط إذا مو دورك
+        if (OnlineGameManager.Instance != null && !OnlineGameManager.Instance.isMyTurn)
+        {
+            Debug.Log("🚫 ليس دورك الآن!");
+            return;
+        }
+
         if (gameEngine != null)
         {
             Debug.Log("🟡 اللاعب الحالي هو: " + gameEngine.GameState.CurrentMovingPlayer);
             gameEngine.HandleSelection(fieldIndex);
-        }
 
+            // ✅ إذا كنا أونلاين، نرسل الحركة للطرف الثاني ونعكس الدور
+            if (OnlineGameManager.Instance != null)
+            {
+                OnlineGameManager.Instance.SendMoveToOpponent(fieldIndex); // (بنضيف هالدالة)
+                OnlineGameManager.Instance.isMyTurn = false;
+            }
+        }
     }
 
     private void Update()
@@ -511,8 +528,36 @@ static GameUIController()
         {
             MakeAiControllerStep();
         }
+
+        // ✅ التحقق من وجود حركة أونلاين مستلمة
+        if (OnlineGameManager.Instance != null)
+        {
+            int index = OnlineGameManager.Instance.receivedFieldIndex;
+            if (index != -1)
+            {
+                Debug.Log("🟢 تنفيذ حركة من الخصم: " + index);
+
+                if (gameEngine != null)
+                {
+                    gameEngine.HandleSelection(index);
+                }
+
+                OnlineGameManager.Instance.receivedFieldIndex = -1;
+                OnlineGameManager.Instance.isMyTurn = true;
+            }
+        }
+
         UpdateGameStateData();
     }
+    public void ForceMoveFromOpponent(int fieldIndex)
+    {
+        if (gameEngine != null)
+        {
+            Debug.Log("🛠️ تنفيذ حركة الخصم: " + fieldIndex);
+            gameEngine.HandleSelection(fieldIndex);
+        }
+    }
+
 
 
     private void MakeAiControllerStep()
