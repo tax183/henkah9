@@ -17,8 +17,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Games page.unity
     guid: 3c7dc21e2de663547a9439bbd64ca96a
-  - enabled: 1
-    path: Assets/Scenes/zd henkatek/Frist.unity
+  - enabled: 0
+    path: Assets/Scenes/frist.unity
     guid: 21d3eaa568e217545ba57feff049414f
   - enabled: 1
     path: Assets/Scenes/zd henkatek/Fourth girl.unity
@@ -30,7 +30,7 @@ EditorBuildSettings:
     path: Assets/Scenes/zd henkatek/Fourth.unity
     guid: aac30687d30c39345a5fe444de4c0b58
   - enabled: 0
-    path: Assets/Scenes/zd henkatek/last.unity
+    path: Assets/Scenes/last.unity
     guid: 1fcf068001cf64647b05a53fcb0ecf2e
   - enabled: 0
     path: Assets/Scenes/Levels.unity
@@ -77,5 +77,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/ProfileScene.unity
     guid: cb655dafd15a12d448562e9f4d4274f0
+  - enabled: 1
+    path: Assets/Scenes/LeaderBoard.unity
+    guid: 6c34e8c6e2a252844a0bdfd3b6219001
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0
