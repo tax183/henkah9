@@ -1,10 +1,25 @@
 fileFormatVersion: 2
-guid: 2ed108d1638b55d4ca54db5face34640
+guid: 211659ad0e0bd084aa2d0aec41ff0e51
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 5982085000614404882
-    second: picleaderboard_0
+      213: -8368744735756051261
+    second: mbrook 1_0
+  - first:
+      213: -7927477180485117018
+    second: mbrook 1_1
+  - first:
+      213: 7442662455195138295
+    second: mbrook 1_2
+  - first:
+      213: -2136539089077969927
+    second: mbrook 1_3
+  - first:
+      213: -724782049553617148
+    second: mbrook 1_4
+  - first:
+      213: 1955943936484217606
+    second: mbrook 1_5
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -37,7 +52,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -46,7 +61,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -72,10 +87,10 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 2048
+    maxTextureSize: 4096
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -85,19 +100,6 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 4
     buildTarget: Standalone
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: WebGL
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
@@ -126,23 +128,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: picleaderboard_0
+      name: mbrook 1_1
       rect:
         serializedVersion: 2
-        x: 92
-        y: 49
-        width: 579
-        height: 622
+        x: 287
+        y: 212
+        width: 3640
+        height: 4450
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 21360d51d92a40350800000000000000
-      internalID: 5982085000614404882
+      spriteID: 6ab5b248181fbf190800000000000000
+      internalID: -7927477180485117018
       vertices: []
       indices: 
       edges: []
@@ -151,7 +153,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 47fca3787afa165449d9cd33452761af
     internalID: 0
     vertices: []
     indices: 
@@ -161,7 +163,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      picleaderboard_0: 5982085000614404882
+      mbrook 1_1: -7927477180485117018
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

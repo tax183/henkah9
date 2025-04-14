@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -25,7 +26,7 @@ public class GameEngine
 
     private PlayerNumber lastPlayerTurn;
 
-    public GameEngine()
+    public GameEngine(PlayerNumber playerNumber)
     {
         Instance = this; // ✅ حفظ نسخة Singleton من GameEngine
 
@@ -54,6 +55,7 @@ public class GameEngine
         if (GameState.CurrentMovingPlayer != lastPlayerTurn)
         {
             lastPlayerTurn = GameState.CurrentMovingPlayer;
+            UnityEngine.Debug.Log("🎯 OnPlayerTurnChanged fired: " + lastPlayerTurn);
             OnPlayerTurnChanged(lastPlayerTurn);
         }
         UpdateLastFieldSelected();
@@ -82,3 +84,4 @@ public class GameEngine
         return GameState.GetCurrentPlayerPossibleMoveIndices();
     }
 }
+
