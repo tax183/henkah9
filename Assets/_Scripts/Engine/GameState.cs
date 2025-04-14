@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -13,7 +14,6 @@ public class GameState
     private static int N_POSSIBLE_MILLS = 16;
     private static int PLAYERS_PAWNS = 9;
     private static int LOSING_PAWNS_NUMBER_THRESHOLD = 2;
-    private static int FLYING_PAWNS_NUMBER = 3;
     private static Mill[] POSSIBLE_MILLS;
     private static List<List<int>> possibleMoveIndices;
     private static string[] fieldNames;
@@ -28,8 +28,10 @@ public class GameState
     public event LastSelectedFieldChanged OnLastSelectedFieldChanged = delegate { };
 
     public MillGameStage GameStage { get; private set; }
-    public int FirstPlayersPawnsLeft {
-        get {
+    public int FirstPlayersPawnsLeft
+    {
+        get
+        {
             return CurrentBoard.GetPlayerFields(PlayerNumber.FirstPlayer).Count;
         }
     }
@@ -55,22 +57,26 @@ public class GameState
     {
         get
         {
-            if(CurrentMovingPlayer == PlayerNumber.FirstPlayer)
+            if (CurrentMovingPlayer == PlayerNumber.FirstPlayer)
             {
                 return FirstPlayersPawnsLeft;
-            } else
+            }
+            else
             {
                 return SecondPlayersPawnsLeft;
             }
         }
     }
 
+
+
     public HashSet<Mill> ActiveMills { get; private set; }
     public HashSet<Mill> ClosedMills { get; private set; }
     public int PawnsToRemove { get; set; }
 
     private Field _lastSelectedField = null;
-    public Field LastSelectedField {
+    public Field LastSelectedField
+    {
         get
         {
             return _lastSelectedField;
@@ -90,7 +96,8 @@ public class GameState
 
     public int MovesMade { get; private set; }
 
-    public bool GameFinished {
+    public bool GameFinished
+    {
         get
         {
             return WinningPlayer != PlayerNumber.None;
@@ -110,8 +117,9 @@ public class GameState
         PawnsToRemove = 0;
         MovesMade = 0;
         MovesUntilNow = "";
+
     }
-    
+
     public GameState(GameState other)
     {
         CurrentBoard = new Board(other.CurrentBoard);
@@ -127,6 +135,7 @@ public class GameState
         MovesMade = other.MovesMade;
         MovesUntilNow = string.Copy(other.MovesUntilNow);
     }
+
     public void TriggerGameStateChanged()
     {
         OnGameStateChanged();
@@ -150,6 +159,7 @@ public class GameState
         OnGameStateChanged();
     }
 
+   
 
 
     private void CheckGameStateChanged()
@@ -193,13 +203,6 @@ public class GameState
         }
     }
 
-    private void HandleFlyingMove(Field newField)
-    {
-        if (LastSelectedField.CanMoveTo(newField))
-        {
-            PerformSelectedMove(newField);
-        }
-    }
     private void RefreshPossibleMoves()
     {
         possibleMoveIndices = new List<List<int>>(Board.DEFAULT_NUMBER_OF_FIELDS);
@@ -221,18 +224,19 @@ public class GameState
             PawnsToRemove += newMillsCount;
             ActiveMills = millDifference.TurnActiveMills;
             ClosedMills.ExceptWith(millDifference.NewMills);
+
+            // NEW: Immediately return control to GameEngine after mill formation
+            LastSelectedField = null;
+            OnGameStateChanged();
+            return; // Exit early to prevent turn switch
         }
         else
         {
             ActiveMills = millDifference.TurnActiveMills;
         }
 
-        LastSelectedField = null; // 🔴 هذا هو الحل، يجب أن يكون دائمًا هنا
-        if (PawnsToRemove <= 0)
-        {
-            SwitchPlayer();
-        }
-
+        LastSelectedField = null;
+        SwitchPlayer(); // This will now only execute if no mills were formed
         OnGameStateChanged();
     }
 
@@ -256,23 +260,51 @@ public class GameState
     {
         Field fieldToRemove = CurrentBoard.GetField(fieldIndex);
 
-        if (!fieldToRemove.Empty && fieldToRemove.PawnPlayerNumber == OtherPlayer)
+        // Enhanced validation
+        if (fieldToRemove.Empty)
         {
-            fieldToRemove.Reset();
-            LogRemoveMove(OtherPlayer, fieldIndex); // 🔴 انتبه: يجب أن تكون OtherPlayer
-            PawnsToRemove--;
-            MovesMade++;
-
-            RecalculateActiveMills();
-
-            if (PawnsToRemove <= 0)
-            {
-                SwitchPlayer();
-            }
-
-            OnGameStateChanged();
+            Debug.Log($"⚠️ Field {fieldIndex} is empty - cannot remove");
+            return;
         }
+
+        if (fieldToRemove.PawnPlayerNumber != OtherPlayer)
+        {
+            Debug.Log($"⚠️ Wrong player - cannot remove {fieldToRemove.PawnPlayerNumber}'s pawn when it's {CurrentMovingPlayer}'s turn");
+            return;
+        }
+
+        // Valid removal
+        fieldToRemove.Reset();
+        LogRemoveMove(OtherPlayer, fieldIndex);
+        PawnsToRemove--;
+        MovesMade++;
+
+        Debug.Log($"✅ Removed {OtherPlayer}'s pawn from {fieldIndex}. Remaining removals: {PawnsToRemove}");
+
+        RecalculateActiveMills();
+
+        // Switch turns only when all required removals are done
+        if (PawnsToRemove <= 0)
+        {
+            Debug.Log($"🔄 Switching from {CurrentMovingPlayer} to {OtherPlayer}");
+            SwitchPlayer();
+        }
+
+        OnGameStateChanged();
     }
+
+    private bool IsPawnInMill(int fieldIndex)
+    {
+        foreach (var mill in ActiveMills)
+        {
+            if (mill.MillIndices.Contains(fieldIndex))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
 
 
@@ -350,7 +382,7 @@ public class GameState
         MovesMade++;
 
         // ✅ تحديث واجهة المستخدم لتقليل عدد الأحجار المتبقية
-        GameUIController uiController = UnityEngine.Object.FindObjectOfType<GameUIController>();
+        GameUIController uiController = UnityEngine.Object.FindFirstObjectByType<GameUIController>();
         if (uiController != null)
         {
             uiController.UpdateStonesUI(playerNumber == PlayerNumber.FirstPlayer ? 1 : 2);
@@ -376,6 +408,7 @@ public class GameState
         if (PawnsToRemove <= 0)
         {
             SwitchPlayer();
+            OnGameStateChanged();
         }
     }
 
@@ -402,14 +435,13 @@ public class GameState
 
     private void SwitchPlayer()
     {
-        if (CurrentMovingPlayer == PlayerNumber.FirstPlayer)
-        {
-            CurrentMovingPlayer = PlayerNumber.SecondPlayer;
-        }
-        else
-        {
-            CurrentMovingPlayer = PlayerNumber.FirstPlayer;
-        }
+        var previousPlayer = CurrentMovingPlayer;
+        CurrentMovingPlayer = (CurrentMovingPlayer == PlayerNumber.FirstPlayer)
+            ? PlayerNumber.SecondPlayer
+            : PlayerNumber.FirstPlayer;
+
+        Debug.Log($"♻️ Turn switched from {previousPlayer} to {CurrentMovingPlayer}");
+        Debug.Log($"📌 Called from:\n{Environment.StackTrace}");
     }
 
     private void RecalculateActiveMills()
@@ -430,13 +462,13 @@ public class GameState
 
     private void RecalculateWinningPlayer()
     {
-        if(GameStage == MillGameStage.PlacingPawns)
+        if (GameStage == MillGameStage.PlacingPawns)
         {
             WinningPlayer = PlayerNumber.None;
         }
         else
         {
-            if(PawnsToRemove <= 0)
+            if (PawnsToRemove <= 0)
             {
 
                 int firstPlayersPossibleMoves = GetAllPossibleMoves(PlayerNumber.FirstPlayer, CurrentBoard).Count;
@@ -457,11 +489,25 @@ public class GameState
     {
         GameState newState = new GameState(this);
         newState.PlayerPlacePawn(fieldIndex, playerNumber);
-        newState.SwitchPlayer();
         newState.RecalculateActiveMills();
+
+        MillDifference millDiff = newState.GetMillDifference(this.ActiveMills, newState.CurrentBoard);
+        if (millDiff.NewMills.Count > 0)
+        {
+            newState.PawnsToRemove += millDiff.NewMills.Count;
+            newState.ActiveMills = millDiff.TurnActiveMills;
+            newState.ClosedMills.ExceptWith(millDiff.NewMills);
+            // ❌ Do NOT switch player — wait for pawn removal
+        }
+        else
+        {
+            newState.SwitchPlayer(); // ✅ Only switch if no mill was formed
+        }
+
         newState.CheckGameStateChanged();
         return newState;
     }
+
 
     private GameState PawnRemovalGameStateFromThis(int fieldIndex)
     {
@@ -477,7 +523,7 @@ public class GameState
         PlayerNumber otherPlayerNumber = playerNumber == PlayerNumber.FirstPlayer ? PlayerNumber.SecondPlayer : PlayerNumber.FirstPlayer;
         GameState newState = new GameState(this);
         newState.PerformMove(move);
-        if(newState.PawnsToRemove == 0)
+        if (newState.PawnsToRemove == 0)
         {
             newState.CheckGameStateChanged();
             listOfAll.Add(newState);
@@ -541,9 +587,23 @@ public class GameState
         return gameStates;
     }
 
+    // In GameState.cs, update the GetAllPossibleNextStates method
     public List<GameState> GetAllPossibleNextStates(PlayerNumber playerNumber)
     {
-        if (GameStage == MillGameStage.PlacingPawns)
+        if (PawnsToRemove > 0)
+        {
+            // Generate removal states
+            List<GameState> removalStates = new List<GameState>();
+            List<Field> otherPlayerFields = CurrentBoard.GetPlayerFields(OtherPlayer);
+            foreach (var field in otherPlayerFields)
+            {
+                GameState newState = new GameState(this);
+                newState.HandlePawnRemoval(field.FieldIndex);
+                removalStates.Add(newState);
+            }
+            return removalStates;
+        }
+        else if (GameStage == MillGameStage.PlacingPawns)
         {
             return GetFirstStageNextPossibleStates(playerNumber);
         }
@@ -591,19 +651,6 @@ public class GameState
             if (fromField.CanMoveTo(toField))
             {
                 possibleFields.Add(board.GetField(index));
-            }
-        }
-        return possibleFields;
-    }
-
-    private List<Field> GetPossibleNewFieldsFlying(Field fromField, Board board)
-    {
-        List<Field> possibleFields = new List<Field>();
-        foreach (var toField in board.Fields)
-        {
-            if (fromField.CanMoveTo(toField))
-            {
-                possibleFields.Add(toField);
             }
         }
         return possibleFields;

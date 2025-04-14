@@ -26,7 +26,7 @@ public class GameEngine
 
     private PlayerNumber lastPlayerTurn;
 
-    public GameEngine(PlayerNumber playerNumber)
+    public GameEngine()
     {
         Instance = this; // ✅ حفظ نسخة Singleton من GameEngine
 
