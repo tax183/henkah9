@@ -12,6 +12,10 @@ using Unity.Services.Lobbies.Models;
 public class LobbyManager : MonoBehaviour
 {
     public static LobbyManager Instance;
+    [SerializeField] private GameObject panelCode;
+    [SerializeField] private GameObject panelJoin;
+    [SerializeField] private GameObject rpsPanel;
+
 
     public Lobby currentLobby;
     private float heartbeatTimer = 0f;
@@ -80,8 +84,9 @@ public class LobbyManager : MonoBehaviour
                 if (currentLobby.Players.Count == 2)
                 {
                     Debug.Log("✅ لاعبين اثنين متصلين، تحميل المشهد التالي...");
-                    GameObject.Find("RPSPanel").SetActive(true);
-                    GameObject.Find("LobbyPanel").SetActive(false);
+                    rpsPanel.SetActive(true);
+                    panelCode?.SetActive(false);
+                    panelJoin?.SetActive(false);
 
                 }
             }

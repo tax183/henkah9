@@ -181,6 +181,8 @@ static GameUIController()
     public void OnPlayWithFriendClicked()
     {
         lobbyPanel.SetActive(true);
+
+        gameModePopup.SetActive(false);
     }
 
     private void ShowGameModePopup()
