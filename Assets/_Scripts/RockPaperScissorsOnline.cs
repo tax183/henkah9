@@ -33,21 +33,23 @@ public class RockPaperScissorsOnline : MonoBehaviour
         // إرسال الاختيار
         OnlineGameManager.Instance.SetMyChoice(choice);
         UpdateImage(choice, player1Image);
-        resultText.text = "⏳ في انتظار الخصم...";
+        resultText.text = "Waiting for opponent...";
 
-        // انتظار الطرف الثاني
-        InvokeRepeating(nameof(CheckOpponent), 1f, 1f);
+        // نبدأ التحقق من الخصم
+        InvokeRepeating(nameof(CheckOpponentChoice), 1f, 1f);
     }
 
-    void CheckOpponent()
+    void CheckOpponentChoice()
     {
-        if (!string.IsNullOrEmpty(OnlineGameManager.Instance.opponentChoice))
+        var mgr = OnlineGameManager.Instance;
+        if (!string.IsNullOrEmpty(mgr.opponentChoice))
         {
-            CancelInvoke(nameof(CheckOpponent));
-            UpdateImage(OnlineGameManager.Instance.opponentChoice, player2Image);
+            CancelInvoke(nameof(CheckOpponentChoice));
+            UpdateImage(mgr.opponentChoice, player2Image);
             ShowResult();
         }
     }
+
 
     void ShowResult()
     {
@@ -56,21 +58,22 @@ public class RockPaperScissorsOnline : MonoBehaviour
 
         if (mgr.myChoice == mgr.opponentChoice)
         {
-            result = "🔁 تعادل! أعد المحاولة";
+            result = "Draw! Try again.";
         }
         else if (mgr.isMyTurn)
         {
-            result = "🏆 أنت تبدأ اللعب!";
+            result = "You go first!";
         }
         else
         {
-            result = "❌ الخصم يبدأ";
+            result = "Opponent goes first.";
         }
 
         resultText.text = result;
 
         Invoke(nameof(ActivateBoard), 3f);
     }
+
 
     void ActivateBoard()
     {

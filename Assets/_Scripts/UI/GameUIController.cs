@@ -502,7 +502,16 @@ static GameUIController()
     }
 
     private void HandleButtonClick(int fieldIndex)
+
     {
+
+        if (gameEngine != null)
+        {
+            Debug.Log("🟡 اللاعب الحالي هو: " + gameEngine.GameState.CurrentMovingPlayer);
+            gameEngine.HandleSelection(fieldIndex);
+        }
+
+
         // ✅ شرط الأونلاين فقط: يمنع الضغط إذا مو دورك
         if (OnlineGameManager.Instance != null && !OnlineGameManager.Instance.isMyTurn)
         {

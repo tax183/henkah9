@@ -75,7 +75,8 @@ public class LobbyManager : MonoBehaviour
         lobbyPollTimer -= Time.deltaTime;
         if (lobbyPollTimer <= 0f)
         {
-            lobbyPollTimer = 2f;
+            lobbyPollTimer = 5f; // أو حتى 10f
+
 
             try
             {
