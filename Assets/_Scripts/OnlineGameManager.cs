@@ -44,13 +44,34 @@ public class OnlineGameManager : MonoBehaviour
         }
     }
 
-    public void SetMyChoice(string choice)
+    public async void SetMyChoice(string choice)
     {
         myChoice = choice;
         Debug.Log("🌟 اخترت: " + choice);
 
-        // ترسل اختيارك للطرف الثاني (بعدين نفعّل الإرسال)
+        if (string.IsNullOrEmpty(lobbyCode)) return;
+
+        try
+        {
+            var data = new Dictionary<string, PlayerDataObject>
+        {
+            { "Choice", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, choice) }
+        };
+
+            await LobbyService.Instance.UpdatePlayerAsync(
+                lobbyCode,
+                AuthenticationService.Instance.PlayerId,
+                new UpdatePlayerOptions { Data = data }
+            );
+
+            Debug.Log("📤 تم إرسال اختيار RPS إلى اللوبي: " + choice);
+        }
+        catch (Exception e)
+        {
+            Debug.LogError("❌ خطأ أثناء إرسال اختيار RPS: " + e.Message);
+        }
     }
+
 
     public void SetOpponentChoice(string choice)
     {
@@ -153,35 +174,46 @@ public class OnlineGameManager : MonoBehaviour
 
             foreach (var player in currentLobby.Players)
             {
-                if (player.Id != AuthenticationService.Instance.PlayerId && player.Data != null && player.Data.ContainsKey("move"))
+                if (player.Id != AuthenticationService.Instance.PlayerId && player.Data != null)
                 {
-                    string moveValue = player.Data["move"].Value;
-                    if (!string.IsNullOrEmpty(moveValue))
+                    // ✅ التحقق من اختيار الخصم
+                    if (player.Data.ContainsKey("Choice"))
                     {
-                        int fieldIndex = int.Parse(moveValue);
-                        Debug.Log("📥 استلام حركة من الخصم: " + fieldIndex);
-
-                        ReceiveMoveFromOpponent(fieldIndex);
-
-                        // 🧹 نمسح الحركة بعد تنفيذها
-                        var resetOptions = new UpdatePlayerOptions
+                        string opp = player.Data["Choice"].Value;
+                        if (!string.IsNullOrEmpty(opp) && opponentChoice != opp)
                         {
-                            Data = new Dictionary<string, PlayerDataObject>
-                        {
-                            { "move", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, "") }
+                            SetOpponentChoice(opp);
                         }
-                        };
+                    }
 
-                        await LobbyService.Instance.UpdatePlayerAsync(currentLobby.Id, player.Id, resetOptions);
+                    // ✅ التحقق من الحركة
+                    if (player.Data.ContainsKey("move"))
+                    {
+                        string moveValue = player.Data["move"].Value;
+                        if (!string.IsNullOrEmpty(moveValue))
+                        {
+                            int fieldIndex = int.Parse(moveValue);
+                            ReceiveMoveFromOpponent(fieldIndex);
+
+                            var resetOptions = new UpdatePlayerOptions
+                            {
+                                Data = new Dictionary<string, PlayerDataObject>
+                            {
+                                { "move", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, "") }
+                            }
+                            };
+                            await LobbyService.Instance.UpdatePlayerAsync(currentLobby.Id, player.Id, resetOptions);
+                        }
                     }
                 }
             }
         }
         catch (Exception e)
         {
-            Debug.LogWarning("🔁 خطأ في التحقق من اللوبي: " + e.Message);
+            Debug.LogWarning("🔁 Lobby check failed: " + e.Message);
         }
     }
+
 
     public void ReceiveMoveFromOpponent(int fieldIndex)
     {
