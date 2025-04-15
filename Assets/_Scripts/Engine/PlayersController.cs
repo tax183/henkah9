@@ -1,5 +1,4 @@
-﻿
-using System.Diagnostics;
+﻿using System.Diagnostics;
 public class PlayersController
 {
     private AiPlayer firstAiPlayer;
@@ -18,46 +17,27 @@ public class PlayersController
 
     public long CheckStep()
     {
-        if (!gameEngineReady) return 0;
-        if (GameEngine.Instance == null || GameEngine.Instance.GameState == null) return 0;
-
-        PlayerNumber actualTurn = GameEngine.Instance.GameState.CurrentMovingPlayer;
-
-        if (actualTurn != currentPlayerTurn)
+        if (gameEngineReady)
         {
-            UnityEngine.Debug.Log("⛔ AI halted: mismatch between expected turn (" + currentPlayerTurn + ") and actual turn (" + actualTurn + ")");
+            stopWatch = Stopwatch.StartNew();
+            if(currentPlayerTurn == PlayerNumber.FirstPlayer)
+            {
+                HandleAiMove(firstAiPlayer);
+            }
+            else
+            {
+                HandleAiMove(secondAiPlayer);
+            }
+            stopWatch.Stop();
+            return stopWatch.ElapsedMilliseconds;
+        } else
+        {
             return 0;
         }
-
-        if (GameEngine.Instance.GameState.PawnsToRemove > 0)
-        {
-            UnityEngine.Debug.Log("⛔ AI halted: player must remove pawn.");
-            return 0;
-        }
-
-        stopWatch = Stopwatch.StartNew();
-
-        if (currentPlayerTurn == PlayerNumber.FirstPlayer)
-        {
-            HandleAiMove(firstAiPlayer);
-        }
-        else
-        {
-            HandleAiMove(secondAiPlayer);
-        }
-
-        stopWatch.Stop();
-        return stopWatch.ElapsedMilliseconds;
-    }
-
-    public PlayerNumber GetCurrentAiTurn()
-    {
-        return currentPlayerTurn;
     }
 
     public void OnPlayerTurnChanged(PlayerNumber playerNumber)
     {
-        UnityEngine.Debug.Log("👂 AI Controller noticed turn switch to: " + playerNumber);
         this.currentPlayerTurn = playerNumber;
         this.gameEngineReady = true;
     }
