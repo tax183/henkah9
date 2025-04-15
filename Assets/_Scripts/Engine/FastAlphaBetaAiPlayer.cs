@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System;
+using UnityEngine;
 using System.Linq;
 
 public class FastAlphaBetaAiPlayer : AiPlayer
@@ -18,34 +19,45 @@ public class FastAlphaBetaAiPlayer : AiPlayer
         this.game = game;
         this.evaluationHeuristic = evaluationHeuristic;
         this.playerNumber = playerNumber;
-        this.searchDepth = searchDepth ;
+        this.searchDepth = searchDepth;
         this.sortHeuristic = sortHeuristic ?? evaluationHeuristic;
     }
 
     public void MakeMove()
     {
-        GameTreeNode bestPossibleMove = null;
         GameState currentState = game.GameState;
 
-        // تقليل العمق في بداية اللعبة لتسريع التفكير
+        // If the game is waiting for a pawn to be removed, don't let the AI act
+        if (currentState.PawnsToRemove > 0)
+        {
+            UnityEngine.Debug.Log("⛔ AI halted: waiting for human to remove a pawn.");
+            return;
+        }
+
         int effectiveDepth = searchDepth;
         int totalPawns = currentState.FirstPlayersPawnsLeft + currentState.SecondPlayersPawnsLeft;
-        if (totalPawns > 12) // يعني بداية اللعبة
+
+        if (totalPawns > 12)
         {
-            effectiveDepth = Math.Min(searchDepth, 2);
+            effectiveDepth = Math.Min(searchDepth, 2); // Optimize early game
         }
 
-        if (playerNumber == PlayerNumber.FirstPlayer)
+        GameTreeNode bestMove = (playerNumber == PlayerNumber.FirstPlayer)
+            ? MinMax(currentState, effectiveDepth, double.NegativeInfinity, double.PositiveInfinity, true)
+            : MinMax(currentState, effectiveDepth, double.NegativeInfinity, double.PositiveInfinity, false);
+
+        if (bestMove == null)
         {
-            bestPossibleMove = MinMax(currentState, effectiveDepth, double.NegativeInfinity, double.PositiveInfinity, true);
-        }
-        else
-        {
-            bestPossibleMove = MinMax(currentState, effectiveDepth, double.NegativeInfinity, double.PositiveInfinity, false);
+            UnityEngine.Debug.Log("❌ AI found no possible move.");
+            return;
         }
 
-        game.MakeMove(bestPossibleMove.GameState);
+        UnityEngine.Debug.Log("🤖 AI applying best move.");
+        game.MakeMove(bestMove.GameState); // ✅ Apply the full move — even if it forms a mill
     }
+
+
+
 
     private GameTreeNode MinMax(GameState currentState, int depth, double alpha, double beta, bool maximizingPlayer)
     {
