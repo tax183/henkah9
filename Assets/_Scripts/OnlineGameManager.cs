@@ -163,46 +163,31 @@ public class OnlineGameManager : MonoBehaviour
             await CheckLobbyForMoves();
         }
     }
-
     private async Task CheckLobbyForMoves()
     {
         if (string.IsNullOrEmpty(lobbyCode)) return;
 
         try
         {
+            // الحصول على اللوبي الحالي
             currentLobby = await LobbyService.Instance.GetLobbyAsync(lobbyCode);
 
+            // التحقق من اللاعبين في اللوبي
             foreach (var player in currentLobby.Players)
             {
                 if (player.Id != AuthenticationService.Instance.PlayerId && player.Data != null)
                 {
-                    // ✅ التحقق من اختيار الخصم
+                    // تحقق إذا كان اللاعب الآخر قد اختار شيئًا
                     if (player.Data.ContainsKey("Choice"))
                     {
                         string opp = player.Data["Choice"].Value;
+
+                        // إذا كان الاختيار ليس فارغًا وتغير من آخر تحديث
                         if (!string.IsNullOrEmpty(opp) && opponentChoice != opp)
                         {
+                            // تحديث اختيار الخصم
                             SetOpponentChoice(opp);
-                        }
-                    }
-
-                    // ✅ التحقق من الحركة
-                    if (player.Data.ContainsKey("move"))
-                    {
-                        string moveValue = player.Data["move"].Value;
-                        if (!string.IsNullOrEmpty(moveValue))
-                        {
-                            int fieldIndex = int.Parse(moveValue);
-                            ReceiveMoveFromOpponent(fieldIndex);
-
-                            var resetOptions = new UpdatePlayerOptions
-                            {
-                                Data = new Dictionary<string, PlayerDataObject>
-                            {
-                                { "move", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, "") }
-                            }
-                            };
-                            await LobbyService.Instance.UpdatePlayerAsync(currentLobby.Id, player.Id, resetOptions);
+                            Debug.Log("👤 خصمك اختار: " + opp); // هنا تظهر الرسالة في الـ Console
                         }
                     }
                 }
@@ -213,6 +198,7 @@ public class OnlineGameManager : MonoBehaviour
             Debug.LogWarning("🔁 Lobby check failed: " + e.Message);
         }
     }
+
 
 
     public void ReceiveMoveFromOpponent(int fieldIndex)
