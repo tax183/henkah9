@@ -23,6 +23,9 @@ public class GameUIController : MonoBehaviour
     private static readonly int FAST_ALPHA_BETA_DROPDOWN_NUMBER = 1;
 
     private static Dictionary<int, Func<Heuristic>> heuristicDictionary;
+    [SerializeField] private TextMeshProUGUI yellowPlayerCounterText;
+    [SerializeField] private TextMeshProUGUI redPlayerCounterText;
+
     [SerializeField] private GameObject[] yellowPawns; // الأحجار الصفراء
     [SerializeField] private GameObject[] redPawns; // الأحجار الحمراء
 
@@ -158,25 +161,39 @@ static GameUIController()
     }
     public void UpdateStonesUI(int player)
     {
-        if (GameEngine.Instance == null) return; // تأكد أن GameEngine موجود
+        if (GameEngine.Instance == null) return;
 
-        int stonesLeft = (player == 1) ? GameEngine.Instance.GameState.FirstPlayersPawnsToPlaceLeft
-                                       : GameEngine.Instance.GameState.SecondPlayersPawnsToPlaceLeft;
+        int stonesLeft = (player == 1)
+            ? GameEngine.Instance.GameState.FirstPlayersPawnsToPlaceLeft
+            : GameEngine.Instance.GameState.SecondPlayersPawnsToPlaceLeft;
 
-        Debug.Log($"🎯 تحديث للأحجار! لاعب {player} لديه {stonesLeft} حجر متبقي.");
+        Debug.Log($"🎯 تحديث الأحجار والعداد! لاعب {player} لديه {stonesLeft} حجر متبقي.");
 
+        // 🔸 تحديث العداد النصي
+        if (player == 1)
+        {
+            yellowPlayerCounterText.text = $"x {stonesLeft}";
+        }
+        else
+        {
+            redPlayerCounterText.text = $"x {stonesLeft}";
+        }
+
+        // 🔸 إخفاء حجر من الأحجار الاحتياطية (المجسمات)
         if (stonesLeft >= 0 && stonesLeft < yellowPawns.Length)
         {
             if (player == 1)
             {
-                yellowPawns[stonesLeft].SetActive(false);
+                redPawns[stonesLeft].SetActive(false); // لأنك قلبت الألوان
             }
             else
             {
-                redPawns[stonesLeft].SetActive(false);
+                yellowPawns[stonesLeft].SetActive(false); // لأنك قلبت الألوان
             }
         }
     }
+
+
 
     public void OnPlayWithFriendClicked()
     {
