@@ -9,7 +9,7 @@ public enum MillGameStage
     NormalPlay
 }
 
-public class GameState
+public class GameState: MonoBehaviour
 {
     private static int N_POSSIBLE_MILLS = 16;
     private static int PLAYERS_PAWNS = 9;
@@ -26,6 +26,8 @@ public class GameState
 
     public delegate void LastSelectedFieldChanged();
     public event LastSelectedFieldChanged OnLastSelectedFieldChanged = delegate { };
+
+  
 
     public MillGameStage GameStage { get; private set; }
     public int FirstPlayersPawnsLeft
@@ -239,14 +241,6 @@ public class GameState
         SwitchPlayer(); // This will now only execute if no mills were formed
         OnGameStateChanged();
     }
-
-
-
-
-
-
-
-
 
     private void PerformMove(Move move)
     {

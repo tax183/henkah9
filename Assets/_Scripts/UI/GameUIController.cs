@@ -458,15 +458,31 @@ static GameUIController()
     {
         UpdateWinningPlayerText(winningPlayer);
         SaveLogs();
+
         gameEngine.OnBoardChanged -= OnBoardUpdated;
         gameEngine.OnGameFinished -= OnGameFinished;
         gameEngine.OnPlayerTurnChanged -= OnPlayerTurnChanged;
         gameEngine.OnPlayerTurnChanged -= aiPlayersController.OnPlayerTurnChanged;
         gameEngine.OnLastFieldSelectedChanged -= UpdatePossibleMoveIndicators;
+
         gameEngine = null;
         aiPlayersController = null;
+
         playButton.interactable = true;
+
+        if (winningPlayer == PlayerNumber.FirstPlayer && isAI)
+        {
+            Debug.Log("🎉 اللاعب فاز - الانتقال إلى مشهد Mabrook");
+            SceneManager.LoadScene("Mabrook");
+        }
+        else if (winningPlayer == PlayerNumber.SecondPlayer && isAI)
+        {
+            Debug.Log("😢 اللاعب خسر - الانتقال إلى مشهد Loser");
+            SceneManager.LoadScene("Loser");
+        }
     }
+
+
 
     private void SaveLogs()
     {
