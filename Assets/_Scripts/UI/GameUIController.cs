@@ -232,27 +232,39 @@ static GameUIController()
         difficultyPopup.SetActive(true);
     }
 
-
-    public void SelectDifficulty(int depth)
+public void SelectDifficulty(int depth)
+{
+    // توزيع ذكي للعمق لتفادي البطء مع الحفاظ على التحدي
+    switch (depth)
     {
-        searchDepth = depth;
-        difficultyPopup.SetActive(false);
-        ShowRPSAI(); // ✅ الحين بس تشغل حجرة ورقة مقص بعد ما يختار الصعوبة
-        if (isAI)
-        {
-            LoadProfileImagePreview();
-        }
-        if (isAI && aiAvatarImage != null)
-        {
-            aiAvatarImage.gameObject.SetActive(true);
-        }
-        if (isAI && aiNameText != null)
-        {
-            aiNameText.text = aiPlayerName;
-            aiNameText.gameObject.SetActive(true);
-        }
-
+        case 1: // Easy
+            searchDepth = 2;
+            break;
+        case 2: // Medium
+            searchDepth = 3;
+            break;
+        case 3: // Hard
+            searchDepth = 4; // أقل من 5 لتجنب البطء
+            break;
     }
+
+    difficultyPopup.SetActive(false);
+    ShowRPSAI();
+
+    if (isAI)
+    {
+        LoadProfileImagePreview();
+    }
+    if (isAI && aiAvatarImage != null)
+    {
+        aiAvatarImage.gameObject.SetActive(true);
+    }
+    if (isAI && aiNameText != null)
+    {
+        aiNameText.text = aiPlayerName;
+        aiNameText.gameObject.SetActive(true);
+    }
+}
 
 
 
