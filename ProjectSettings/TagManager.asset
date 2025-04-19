@@ -11,7 +11,7 @@ TagManager:
   - circle
   - Water
   - UI
-  - 
+  - spark
   - 
   - 
   - 
@@ -40,6 +40,12 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Spark
+    uniqueID: 4154407545
+    locked: 0
+  - name: New Layer 2
+    uniqueID: 672108463
     locked: 0
   m_RenderingLayers:
   - Default
